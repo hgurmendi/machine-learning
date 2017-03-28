@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
     FILE *fd;
     double *mu;
     char *namesFile, *dataFile;
-    int i, j, n;
+    int i, n;
     double C;
 
     if (argc <= 4) {

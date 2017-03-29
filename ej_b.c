@@ -141,12 +141,14 @@ int main(int argc, char *argv[])
     mu = vector_new(d);
    
     /* CLASS 0 */
-    vector_fill(d, mu, -1.0);
-    genClass(n / 2, d, mu, C * sqrt(d), '0', fd);
+    vector_fill(d, mu, 0);
+    mu[0] = -1.0;
+    genClass(n / 2, d, mu, C, '0', fd);
 
     /* CLASS 1 */
-    vector_fill(d, mu, 1.0);
-    genClass(n / 2, d, mu, C * sqrt(d), '1', fd);
+    vector_fill(d, mu, 0);
+    mu[0] = 1.0;
+    genClass(n / 2, d, mu, C, '1', fd);
     
     fclose(fd);
 

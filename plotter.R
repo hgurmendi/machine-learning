@@ -42,7 +42,6 @@ plot(c0$V1, c0$V2, xlim=c(minX, maxX), ylim=c(minY, maxY), col="green", xlab="X"
 par(new=T)
 plot(c1$V1, c1$V2, xlim=c(minX, maxX), ylim=c(minY, maxY), col="red", xlab="X", ylab="Y")
 abline(h=0, v=0)
-dev.off()
 
 message(paste0("Graph file: ", outputFile))
 message("Plotting done")

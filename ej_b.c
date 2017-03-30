@@ -4,8 +4,11 @@
 #include <math.h>
 #include <time.h>
 
-/* Generates a random number in [0, 1] */
+/* Generates an uniformly distributed random number in [0, 1] */
 #define random() (rand() / ((double) RAND_MAX))
+
+/* Generates an uniformly distributed random number in [start, end] */
+#define randomr(start, end) ((start) + (random() * ((end) - (start))))
 
 /* Allocates memory for a d-dimensional vector and returns it */
 double *vector_new(int d)
@@ -56,16 +59,15 @@ double norm(double mu, double sigma, double x)
 /* Generates a normally distributed number with parameters mu and sigma */
 double genNorm(double mu, double sigma)
 {
-    double left, right, delta, max, x, y;
+    double left, right, max, x, y;
 
     left = mu - 5.0 * sigma;
     right = mu + 5.0 * sigma;
-    delta = right - left;
     max = 1.0 / sqrt(2 * M_PI) * sigma;
 
     do {
-        x = left + random() * delta;
-        y = random() * max;
+        x = randomr(left, right);
+        y = randomr(0, max);
     } while (y > norm(mu, sigma, x));
 
     return x;

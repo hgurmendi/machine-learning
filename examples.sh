@@ -1,7 +1,7 @@
 #! /bin/sh
 
 if [ $# -ne 1 ]; then
-    echo USAGE: $0 "<file>"
+    echo USAGE: $0 "<output>"
     exit
 fi
 

@@ -11,8 +11,9 @@
 #define randomr(start, end) ((start) + (random() * ((end) - (start))))
 
 /* Generation radius */
-#define RADIUS 1.0
+#define RADIUS 1.00
 
+/* Parameter for the spiral's equation */
 #define SPIRAL_PARAM (1 / (4 * M_PI))
 
 /* Determines the radios of a spiral with parameters a and b for a given theta */
@@ -29,7 +30,7 @@ void cart2polar(double x, double y, double *r, double *theta)
     *theta = atan2(y, x);
 }
 
-char getClass(double x, double y)
+int getClass(double x, double y)
 {
     double r0, theta0, inner, outer, sep;
 
@@ -42,21 +43,22 @@ char getClass(double x, double y)
 
     while (inner <= RADIUS) {
         if (r0 >= inner && r0 <= outer) {
-            return '0';
+            return 0;
         }
 
         inner += sep;
         outer += sep;
     }
 
-    return '1';
+    return 1;
 }
 
 int main(int argc, char *argv[])
 {
     FILE *fd;
-    int n, gen0, gen1;
+    int n, gen[2], class;
     char *namesFile, *dataFile;
+    double x, y;
 
     if (argc <= 2) {
         printf("USAGE: %s <n> <output>\n", argv[0]);
@@ -93,32 +95,23 @@ int main(int argc, char *argv[])
     fd = fopen(dataFile, "w");
     assert(fd != NULL);
 
-    gen0 = gen1 = n / 2;
-   
-    while (gen0 > 0 && gen1 > 0) {
-        double x, y;
-        char class;
- 
+    gen[0] = gen[1] = n / 2;
+
+    while (gen[0] > 0 || gen[1] > 0) {
         do {
             x = randomr(-RADIUS, RADIUS);
             y = randomr(-RADIUS, RADIUS);
-        } while (sqrt(x * x + y * y) > 1);
+        } while (sqrt(x * x + y * y) > RADIUS);
 
         class = getClass(x, y);
 
-        if (class == '0' && gen0 > 0) {
-            gen0--;
-            fprintf(fd, "%f, %f, %c\n", x, y, class);
-        }
-
-        if (class == '1' && gen1 > 0) {
-            gen1--;
-            fprintf(fd, "%f, %f, %c\n", x, y, class);
+        if (gen[class] > 0) {
+            gen[class]--;
+            fprintf(fd, "%f, %f, %d\n", x, y, class);
         }
     }
     
     fclose(fd);
 
     return 0;
-
 }

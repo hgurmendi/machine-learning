@@ -75,11 +75,11 @@ double genNorm(double mu, double sigma)
 
 /* Generates n normally distributed d-vectors with parameters mu and sigma and a diagonal
 covariance matrix and writes them to a given file descriptor with the C4.5 format */
-void genClass(int n, int d, double *mu, double sigma, char id, FILE *fd)
+void genClass(int n, int d, double *mu, double sigma, int id, FILE *fd)
 {
     int i, j;
 
-    printf("Generating class %c with the following parameters:\n", id);
+    printf("Generating class %d with the following parameters:\n", id);
     printf("mu: ");
     vector_print(d, mu);
     printf("\nsigma: %f\n", sigma);
@@ -88,10 +88,10 @@ void genClass(int n, int d, double *mu, double sigma, char id, FILE *fd)
         for (j = 0; j < d; j++) {
             fprintf(fd, "%f, ", genNorm(mu[j], sigma));
         }
-        fprintf(fd, "%c\n", id);
+        fprintf(fd, "%d\n", id);
     }
 
-    printf("Class %c generation done\n", id);
+    printf("Class %d generation done\n", id);
 }
 
 int main(int argc, char *argv[])
@@ -144,11 +144,11 @@ int main(int argc, char *argv[])
    
     /* CLASS 0 */
     vector_fill(d, mu, -1.0);
-    genClass(n / 2, d, mu, C * sqrt(d), '0', fd);
+    genClass(n / 2, d, mu, C * sqrt(d), 0, fd);
 
     /* CLASS 1 */
     vector_fill(d, mu, 1.0);
-    genClass(n / 2, d, mu, C * sqrt(d), '1', fd);
+    genClass(n / 2, d, mu, C * sqrt(d), 1, fd);
     
     fclose(fd);
 

@@ -4,11 +4,9 @@
 #include <math.h>
 #include <time.h>
 
-/* Generates an uniformly distributed random number in [0, 1] */
-#define random() (rand() / ((double) RAND_MAX))
-
-/* Generates an uniformly distributed random number in [start, end] */
-#define randomr(start, end) ((start) + (random() * ((end) - (start))))
+/* Generates an uniformly distributed random floating-point number in
+[start, end) */
+#define randomr(start, end) ((start) + (drand48() * ((end) - (start))))
 
 /* Generation radius */
 #define RADIUS 1.00
@@ -16,7 +14,8 @@
 /* Parameter for the spiral's equation */
 #define SPIRAL_PARAM (1 / (4 * M_PI))
 
-/* Determines the radios of a spiral with parameters a and b for a given theta */
+/* Determines the radios of a spiral with parameters a and b for a given
+theta */
 double spiral(double a, double b, double theta)
 {
     return a + b * theta;

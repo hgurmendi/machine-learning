@@ -4,11 +4,9 @@
 #include <math.h>
 #include <time.h>
 
-/* Generates an uniformly distributed random number in [0, 1] */
-#define random() (rand() / ((double) RAND_MAX))
-
-/* Generates an uniformly distributed random number in [start, end] */
-#define randomr(start, end) ((start) + (random() * ((end) - (start))))
+/* Generates an uniformly distributed random floating-point number in
+[start, end) */
+#define randomr(start, end) ((start) + (drand48() * ((end) - (start))))
 
 /* Allocates memory for a d-dimensional vector and returns it */
 double *vector_new(int d)
@@ -50,7 +48,8 @@ void vector_fill(int d, double *v, double value)
     }
 }
 
-/* Probability Density Function for a normal distribution with parameters mu and sigma */
+/* Probability Density Function for a normal distribution with parameters mu
+and sigma */
 double norm(double mu, double sigma, double x)
 {
     return (1.0 / (sqrt(2 * M_PI) * sigma)) * exp(-(((x - mu) * (x - mu)) / (2 * sigma * sigma)));
@@ -73,8 +72,9 @@ double genNorm(double mu, double sigma)
     return x;
 }
 
-/* Generates n normally distributed d-vectors with parameters mu and sigma and a diagonal
-covariance matrix and writes them to a given file descriptor with the C4.5 format */
+/* Generates n normally distributed d-vectors with parameters mu and sigma
+and a diagonal covariance matrix and writes them to a given file descriptor
+with the C4.5 format */
 void genClass(int n, int d, double *mu, double sigma, int id, FILE *fd)
 {
     int i, j;
@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
     d = atoi(argv[2]);
     C = atof(argv[3]);
 
-    srand(time(NULL));
+    srand48((long int) time(NULL));
 
     /* Generate filenames */
     asprintf(&namesFile, "%s.names", argv[4]);

@@ -4,3 +4,6 @@ all:
 	gcc -Wall -g -D_GNU_SOURCE -o ej_c ej_c.c -lm
 	chmod +x plotter.R
 	chmod +x examples.sh
+
+clean:
+	rm -f ej_a ej_b ej_c

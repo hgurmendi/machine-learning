@@ -24,7 +24,7 @@ double *vector_new(int d)
     return v;
 }
 
-/* Prints a d-dimensional vector to the standard input */
+/* Prints a d-dimensional vector to the standard output */
 void vector_print(int d, double *v)
 {
     int i;

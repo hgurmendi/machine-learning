@@ -4,6 +4,12 @@
 #include <math.h>
 #include <time.h>
 
+/* Type for the PRNG seed */
+#define SEED_TYPE long int
+
+/* Size in bytes of the PRNG seed */
+#define SEED_SIZE sizeof(SEED_TYPE)
+
 /* Generates an uniformly distributed random floating-point number in
 [start, end) */
 #define randomr(start, end) ((start) + (drand48() * ((end) - (start))))
@@ -27,6 +33,25 @@ void cart2polar(double x, double y, double *r, double *theta)
     *r = sqrt(x * x + y * y);
 
     *theta = atan2(y, x);
+}
+
+/* Get a seed for the PRNG from /dev/urandom */
+SEED_TYPE get_seed()
+{
+    FILE *fd;
+    int ret;
+    SEED_TYPE seed;
+
+    fd = fopen("/dev/urandom", "r");
+    assert(fd != NULL);
+
+    ret = fread(&seed, 1, SEED_SIZE, fd);
+    assert(ret != -1);
+
+    ret = fclose(fd);
+    assert(ret != -1);
+
+    return seed;
 }
 
 int getClass(double x, double y)
@@ -66,7 +91,7 @@ int main(int argc, char *argv[])
     
     n = atoi(argv[1]);
 
-    srand(time(NULL));
+    srand48(get_seed());
     
     /* Generate filenames */
     asprintf(&namesFile, "%s.names", argv[2]);

@@ -4,6 +4,12 @@
 #include <math.h>
 #include <time.h>
 
+/* Type for the PRNG seed */
+#define SEED_TYPE long int
+
+/* Size in bytes of the PRNG seed */
+#define SEED_SIZE sizeof(SEED_TYPE)
+
 /* Generates an uniformly distributed random floating-point number in
 [start, end) */
 #define randomr(start, end) ((start) + (drand48() * ((end) - (start))))
@@ -46,6 +52,25 @@ void vector_fill(int d, double *v, double value)
     for (i = 0; i < d; i++) {
         v[i] = value;
     }
+}
+
+/* Get a seed for the PRNG from /dev/urandom */
+SEED_TYPE get_seed()
+{
+    FILE *fd;
+    int ret;
+    SEED_TYPE seed;
+
+    fd = fopen("/dev/urandom", "r");
+    assert(fd != NULL);
+
+    ret = fread(&seed, 1, SEED_SIZE, fd);
+    assert(ret != -1);
+
+    ret = fclose(fd);
+    assert(ret != -1);
+
+    return seed;
 }
 
 /* Probability Density Function for a normal distribution with parameters mu
@@ -111,7 +136,7 @@ int main(int argc, char *argv[])
     d = atoi(argv[2]);
     C = atof(argv[3]);
 
-    srand48((long int) time(NULL));
+    srand48(get_seed());
 
     /* Generate filenames */
     asprintf(&namesFile, "%s.names", argv[4]);

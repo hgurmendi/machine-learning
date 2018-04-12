@@ -54,7 +54,7 @@ SEED_TYPE get_seed()
     return seed;
 }
 
-int getClass(double x, double y)
+int get_class(double x, double y)
 {
     double r0, theta0, inner, outer, sep;
 
@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
 {
     FILE *fd;
     int n, gen[2], class;
-    char *namesFile, *dataFile;
+    char *names_file, *data_file;
     double x, y;
 
     if (argc <= 2) {
@@ -94,16 +94,16 @@ int main(int argc, char *argv[])
     srand48(get_seed());
     
     /* Generate filenames */
-    asprintf(&namesFile, "%s.names", argv[2]);
-    asprintf(&dataFile, "%s.data", argv[2]);
+    asprintf(&names_file, "%s.names", argv[2]);
+    asprintf(&data_file, "%s.data", argv[2]);
 
-    printf("Names file: %s\n", namesFile);
-    printf("Data file: %s\n", dataFile);
+    printf("Names file: %s\n", names_file);
+    printf("Data file: %s\n", data_file);
 
     /***********************/
     /* Generate names file */
     /***********************/
-    fd = fopen(namesFile, "w");
+    fd = fopen(names_file, "w");
     assert(fd != NULL);
   
     fprintf(fd, "0, 1.\n\n");
@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
     /**********************/
     /* Generate data file */
     /**********************/
-    fd = fopen(dataFile, "w");
+    fd = fopen(data_file, "w");
     assert(fd != NULL);
 
     gen[0] = gen[1] = n / 2;
@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
             y = randomr(-RADIUS, RADIUS);
         } while (sqrt(x * x + y * y) > RADIUS);
 
-        class = getClass(x, y);
+        class = get_class(x, y);
 
         if (gen[class] > 0) {
             gen[class]--;

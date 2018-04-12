@@ -81,7 +81,7 @@ double norm(double mu, double sigma, double x)
 }
 
 /* Generates a normally distributed number with parameters mu and sigma */
-double genNorm(double mu, double sigma)
+double gen_norm(double mu, double sigma)
 {
     double left, right, max, x, y;
 
@@ -100,7 +100,7 @@ double genNorm(double mu, double sigma)
 /* Generates n normally distributed d-vectors with parameters mu and sigma
 and a diagonal covariance matrix and writes them to a given file descriptor
 with the C4.5 format */
-void genClass(int n, int d, double *mu, double sigma, int id, FILE *fd)
+void gen_class(int n, int d, double *mu, double sigma, int id, FILE *fd)
 {
     int i, j;
 
@@ -111,7 +111,7 @@ void genClass(int n, int d, double *mu, double sigma, int id, FILE *fd)
 
     for (i = 0; i < n; i++) {
         for (j = 0; j < d; j++) {
-            fprintf(fd, "%f, ", genNorm(mu[j], sigma));
+            fprintf(fd, "%f, ", gen_norm(mu[j], sigma));
         }
         fprintf(fd, "%d\n", id);
     }
@@ -123,7 +123,7 @@ int main(int argc, char *argv[])
 {
     FILE *fd;
     double *mu;
-    char *namesFile, *dataFile;
+    char *names_file, *data_file;
     int i, n, d;
     double C;
 
@@ -139,16 +139,16 @@ int main(int argc, char *argv[])
     srand48(get_seed());
 
     /* Generate filenames */
-    asprintf(&namesFile, "%s.names", argv[4]);
-    asprintf(&dataFile, "%s.data", argv[4]);
+    asprintf(&names_file, "%s.names", argv[4]);
+    asprintf(&data_file, "%s.data", argv[4]);
 
-    printf("Names file: %s\n", namesFile);
-    printf("Data file: %s\n", dataFile);
+    printf("Names file: %s\n", names_file);
+    printf("Data file: %s\n", data_file);
 
     /***********************/
     /* Generate names file */
     /***********************/
-    fd = fopen(namesFile, "w");
+    fd = fopen(names_file, "w");
     assert(fd != NULL);
   
     fprintf(fd, "0, 1.\n\n");
@@ -162,18 +162,18 @@ int main(int argc, char *argv[])
     /**********************/
     /* Generate data file */
     /**********************/
-    fd = fopen(dataFile, "w");
+    fd = fopen(data_file, "w");
     assert(fd != NULL);
 
     mu = vector_new(d);
    
     /* CLASS 0 */
     vector_fill(d, mu, -1.0);
-    genClass(n / 2, d, mu, C * sqrt(d), 0, fd);
+    gen_class(n / 2, d, mu, C * sqrt(d), 0, fd);
 
     /* CLASS 1 */
     vector_fill(d, mu, 1.0);
-    genClass(n / 2, d, mu, C * sqrt(d), 1, fd);
+    gen_class(n / 2, d, mu, C * sqrt(d), 1, fd);
     
     fclose(fd);
 

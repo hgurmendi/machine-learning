@@ -4,21 +4,16 @@
 #include <math.h>
 #include <time.h>
 
-/* Type for the PRNG seed */
-#define SEED_TYPE long int
+#include "random.h"
 
-/* Size in bytes of the PRNG seed */
-#define SEED_SIZE sizeof(SEED_TYPE)
-
-/* Generates an uniformly distributed random floating-point number in
-[start, end) */
-#define randomr(start, end) ((start) + (drand48() * ((end) - (start))))
 
 /* Generation radius */
 #define RADIUS 1.00
 
+
 /* Parameter for the spiral's equation */
 #define SPIRAL_PARAM (1 / (4 * M_PI))
+
 
 /* Determines the radios of a spiral with parameters a and b for a given
 theta */
@@ -26,6 +21,7 @@ double spiral(double a, double b, double theta)
 {
     return a + b * theta;
 }
+
 
 /* Determines the radius and theta of a given cartesian coordinate */
 void cart2polar(double x, double y, double *r, double *theta)
@@ -35,24 +31,6 @@ void cart2polar(double x, double y, double *r, double *theta)
     *theta = atan2(y, x);
 }
 
-/* Get a seed for the PRNG from /dev/urandom */
-SEED_TYPE get_seed()
-{
-    FILE *fd;
-    int ret;
-    SEED_TYPE seed;
-
-    fd = fopen("/dev/urandom", "r");
-    assert(fd != NULL);
-
-    ret = fread(&seed, 1, SEED_SIZE, fd);
-    assert(ret != -1);
-
-    ret = fclose(fd);
-    assert(ret != -1);
-
-    return seed;
-}
 
 int get_class(double x, double y)
 {
@@ -77,6 +55,7 @@ int get_class(double x, double y)
     return 1;
 }
 
+
 int main(int argc, char *argv[])
 {
     FILE *fd;
@@ -91,8 +70,8 @@ int main(int argc, char *argv[])
     
     n = atoi(argv[1]);
 
-    srand48(get_seed());
-    
+    random_init();
+
     /* Generate filenames */
     asprintf(&names_file, "%s.names", argv[2]);
     asprintf(&data_file, "%s.data", argv[2]);
@@ -123,8 +102,8 @@ int main(int argc, char *argv[])
 
     while (gen[0] > 0 || gen[1] > 0) {
         do {
-            x = randomr(-RADIUS, RADIUS);
-            y = randomr(-RADIUS, RADIUS);
+            x = random_uniform(-RADIUS, RADIUS);
+            y = random_uniform(-RADIUS, RADIUS);
         } while (sqrt(x * x + y * y) > RADIUS);
 
         class = get_class(x, y);

@@ -98,7 +98,8 @@ int main(int argc, char *argv[])
     fd = fopen(data_file, "w");
     assert(fd != NULL);
 
-    gen[0] = gen[1] = n / 2;
+    gen[0] = n / 2;
+    gen[1] = n - (n / 2);
 
     while (gen[0] > 0 || gen[1] > 0) {
         do {

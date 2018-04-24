@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
 
     /* CLASS 1 */
     vector_fill(d, mu, 1.0);
-    gen_class(n / 2, d, mu, C * sqrt(d), 1, fd);
+    gen_class(n - (n / 2), d, mu, C * sqrt(d), 1, fd);
     
     fclose(fd);
 

@@ -1,37 +1,44 @@
 #!/bin/sh
 
 FILE_STEM=ej04
-C45_PATH=./c4.5
+C45_PATH=./c4.5r8/Src/c4.5
 TEST_SIZE=10000
 TRAIN_SIZES="150 600 3000"
-GEN_PATH=./spirals
-TEMP_DIR=temp
+GEN_PATH=../ml00/spirals
+TEMP_DIR=temp04
 PLOTTER_PATH=./plotter.R
+
+# Clean previous work
+if [ ! -d "${TEMP_DIR}" ]; then
+    mkdir ${TEMP_DIR}
+fi
 
 rm ${TEMP_DIR}/*
 
 STEM_PATH=${TEMP_DIR}/${FILE_STEM}
 
-echo "Generando conjunto de test de tamaño ${TEST_SIZE}"
+# Generate test set
+echo "Generating test set of size ${TEST_SIZE}"
 ${GEN_PATH} ${TEST_SIZE} ${TEMP_DIR}/${FILE_STEM}
 
 mv ${STEM_PATH}.data ${STEM_PATH}.test
 rm ${STEM_PATH}.names
 
+# Generate training sets for the requested sizes
 for n in ${TRAIN_SIZES}
 do
-    echo "Generando conjunto de entrenamiento de tamaño ${n}"
+    echo "Generating training set of size ${n}"
     
     ${GEN_PATH} ${n} ${STEM_PATH}_${n}
 
-    # Creo un link simbólico al conjunto de test (ya que es el mismo para todos
-    # los conjuntos de entrenamiento)
+    # Symlink to the actual test set (which is shared between every training
+    # set)
     ln -s ${FILE_STEM}.test ${STEM_PATH}_${n}.test
 
-    echo "Corriendo c4.5 para el conjunto de entrenamiento de tamaño ${n}"
+    echo "Running c4.5 for the training set of size ${n}"
     ${C45_PATH} -f ${STEM_PATH}_${n} -u
 
-    # Genero gráficas para los conjuntos de entrenamiento y sus predicciones
+    # Generate plots for the training and prediction sets
     ${PLOTTER_PATH} ${STEM_PATH}_${n} data
     ${PLOTTER_PATH} ${STEM_PATH}_${n} prediction
 done

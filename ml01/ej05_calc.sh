@@ -1,31 +1,78 @@
 #!/bin/sh
 
-C45_PATH=./c4.5r8/Src/c4.5
-FILE_STEM=ej05
-TEST_SIZE=10000
-TRAIN_SIZES="125 250 500 1000 2000 4000"
-GENERATORS_DIR=../ml00
-GENERATORS="diagonal parallel"
-GENERATIONS=20
-TEMP_DIR=temp05
+# See `help set`
+set -x
+# set -v
+
+# Load parameters for exercise 5
+. ./ej05_common.sh
 
 for g in ${GENERATORS}
 do
+    echo "n,TrainEBP,TestEBP,TrainEAP,TestEAP" >> ${TEMP_DIR}/${FILE_STEM}_${g}.errors
+    echo "n,SBP,SAP" >> ${TEMP_DIR}/${FILE_STEM}_${g}.sizes
+
     for n in ${TRAIN_SIZES}
     do
-        for i in $(seq 20)
+        STEM_PATH=${TEMP_DIR}/${FILE_STEM}_${g}_${n}
+        
+        echo "Training ${STEM_PATH}..."
+
+        rm -f ${STEM_PATH}.raw
+
+        for i in $(seq ${GENERATIONS})
         do
-            STEM_PATH=${TEMP_DIR}/${FILE_STEM}_${g}_${n}_${i}
+            echo "*** Training ${STEM_PATH}_${i}..."
 
-            echo "Processing ${STEM_PATH}"
+            # Generate decision tree for the current generation and redirect
+            # its output to ${STEM_CURRENT}_${i}.output
+            ${C45_PATH} -f ${STEM_PATH}_${i} -u > ${STEM_PATH}_${i}.output
 
-            # Generate decision tree for the current file and redirect its
-            # output to $STEM_CURRENT.output
-            ${C45_PATH} -f ${STEM_PATH} -u >> ${STEM_PATH}.output
-
-            # Get the lines of the output that contain the sequence "<<" and
-            # dump them to $STEM_CURRENT.raw for further processing
-            grep "<<" ${STEM_PATH}.output >> ${STEM_PATH}.raw
+            # Get every line of the output that contains the sequence "<<"
+            # and append it to ${STEM_CURRENT}.raw for future processing
+            grep "<<" ${STEM_PATH}_${i}.output >> ${STEM_PATH}.raw
         done
+
+        echo "Gathering data for ${STEM_PATH}..."
+
+        # awk -F "[()]" indicates that fields are separated by the characters '(' and ')'.
+        # use gsub to remove the trailing % from the necessary percentage field.
+        
+        # Error percentage
+
+        # Error before pruning
+        cat ${STEM_PATH}.raw | awk -F "[()]" '{gsub(/(%| )/,""); print $2}' | paste -d "," - - >> ${STEM_PATH}.ebp
+        # Every line in ${STEM_PATH}.ebp has the following format:
+        # <TrainingErrorPercentage>,<TestErrorPercentage>
+
+        # Error after pruning
+        cat ${STEM_PATH}.raw | awk -F "[()]" '{gsub(/(%| )/,""); print $4}' | paste -d "," - - >> ${STEM_PATH}.eap
+        # Every line in ${STEM_PATH}.eap has the following format:
+        # <TrainingErrorPercentage>,<TestErrorPercentage>
+
+        # Tree size
+
+        # Size before pruning
+        cat ${STEM_PATH}.raw | awk -F "[()]" '{print $1}' | awk '{print $1}' | awk 'NR%2==0' >> ${STEM_PATH}.sbp
+        # Every line in ${STEM_PATH}.sbp has the size of the decision tree
+
+        # Size after pruning
+        cat ${STEM_PATH}.raw | awk -F "[()]" '{print $3}' | awk '{print $1}' | awk 'NR%2==0' >> ${STEM_PATH}.sap
+        # Every line in ${STEM_PATH}.sap has the size of the decision tree
+
+        # Get error averages
+        TRAIN_EBP=$(cat ${STEM_PATH}.ebp | awk -F',' '{acum+=$1; ++n} END {print acum/n}')
+        TEST_EBP=$(cat ${STEM_PATH}.ebp | awk -F',' '{acum+=$2; ++n} END {print acum/n}')
+        TRAIN_EAP=$(cat ${STEM_PATH}.eap | awk -F',' '{acum+=$1; ++n} END {print acum/n}')
+        TEST_EAP=$(cat ${STEM_PATH}.eap | awk -F',' '{acum+=$2; ++n} END {print acum/n}')
+
+        echo "${n},${TRAIN_EBP},${TEST_EBP},${TRAIN_EAP},${TEST_EAP}" >> ${TEMP_DIR}/${FILE_STEM}_${g}.errors
+
+        # Get size averages
+        SBP=$(cat ${STEM_PATH}.sbp | awk '{acum+=$1} END {print acum/NR}')
+        SAP=$(cat ${STEM_PATH}.sap | awk '{acum+=$1} END {print acum/NR}')
+
+        echo "${n},${SBP},${SAP}" >> ${TEMP_DIR}/${FILE_STEM}_${g}.sizes
+
     done
 done

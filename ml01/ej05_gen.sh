@@ -1,15 +1,11 @@
 #!/bin/sh
 
-FILE_STEM=ej05
-TEST_SIZE=10000
-TRAIN_SIZES="125 250 500 1000 2000 4000"
-GENERATORS_DIR=../ml00
-GENERATORS="diagonal parallel"
-GENERATIONS=20
-TEMP_DIR=temp05
+# See `help set`
+set -x
+# set -v
 
-PARAM_C=0.78
-PARAM_d=2
+# Load parameters for exercise 5
+. ./ej05_common.sh
 
 # Clean previous work
 if [ ! -d "${TEMP_DIR}" ]; then
@@ -36,7 +32,7 @@ do
     # Generate the training sets for every training size
     for n in ${TRAIN_SIZES}
     do
-        for i in $(seq 20)
+        for i in $(seq ${GENERATIONS})
         do
             STEM_CURRENT=${STEM_PATH}_${n}_${i}
 
@@ -44,6 +40,8 @@ do
 
             # Symlink to the actual test set
             ln -s ${FILE_STEM}_${g}.test ${STEM_CURRENT}.test
+
+            # ./plotter.R ${STEM_CURRENT} data
         done
     done
 done

@@ -61,7 +61,7 @@ double random_norm(double mu, double sigma)
 
     left = mu - 5.0 * sigma;
     right = mu + 5.0 * sigma;
-    max = 1.0 / sqrt(2 * M_PI) * sigma;
+    max = norm(mu, sigma, mu);
 
     do {
         x = random_uniform(left, right);

@@ -8,3 +8,4 @@ set -x
 ./ej05_calc.sh
 
 ./ej05_plot_errors.R ${TEMP_DIR}/${FILE_STEM}_parallel.errors ${TEMP_DIR}/${FILE_STEM}_diagonal.errors
+./ej05_plot_sizes.R ${TEMP_DIR}/${FILE_STEM}_parallel.sizes ${TEMP_DIR}/${FILE_STEM}_diagonal.sizes

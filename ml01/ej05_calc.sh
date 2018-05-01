@@ -9,6 +9,7 @@ set -x
 
 for g in ${GENERATORS}
 do
+    # Generate headers for the errors and sizes files
     echo "n,TrainEBP,TestEBP,TrainEAP,TestEAP" >> ${TEMP_DIR}/${FILE_STEM}_${g}.errors
     echo "n,SBP,SAP" >> ${TEMP_DIR}/${FILE_STEM}_${g}.sizes
 

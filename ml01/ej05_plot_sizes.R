@@ -3,7 +3,7 @@
 args <- commandArgs(trailingOnly = TRUE)
 
 if (length(args) != 2) {
-    message("USAGE: ./ej05_plot.R parallel_errors diagonal_errors")
+    message("USAGE: ./ej05_plot.R parallel_sizes diagonal_sizes")
     quit()
 }
 
@@ -25,74 +25,46 @@ diagonal <- read.csv(args[2], header = TRUE)
 minX <- min(parallel$n, diagonal$n)
 maxX <- max(parallel$n, diagonal$n)
 
-minY <- min(parallel$TestEBP, parallel$TrainEBP, diagonal$TrainEBP, diagonal$TestEBP)
-maxY <- max(parallel$TestEBP, parallel$TrainEBP, diagonal$TrainEBP, diagonal$TestEBP)
+minY <- min(parallel$SBP, parallel$SAP, diagonal$SBP, diagonal$SAP)
+maxY <- max(parallel$SBP, parallel$SAP, diagonal$SBP, diagonal$SAP)
 
 # rojo -> diagonal
 # verde -> parallel
 
-png("ebp.png")
+png("sbp.png")
 par(mar=c(4,4,1,1)) # par = parametros de plot, mar = margenes, c(bottom, left, top, right)
 plot(diagonal$n
-   , diagonal$TrainEBP
+   , diagonal$SBP
    , col = "red"
    , type = "o"
    , xlim = c(minX, maxX)
    , ylim = c(minY, maxY)
    , xlab = "Training set size"
-   , ylab = "Error percentage"
-   , lwd = 2
-   , lty = 3)
-
-lines(diagonal$n
-    , diagonal$TestEBP
-    , col = "red"
-    , type = "o"
-    , lwd = 2)
+   , ylab = "Tree size"
+   , lwd = 2)
 
 lines(parallel$n
-    , parallel$TrainEBP
-    , col = "green"
-    , type = "o"
-    , lwd = 2
-    , lty = 3)
-
-lines(parallel$n
-    , parallel$TestEBP
+    , parallel$SBP
     , col = "green"
     , type = "o"
     , lwd = 2)
 
 # after pruning
 
-png("eap.png")
+png("sap.png")
 par(mar=c(4,4,1,1)) # par = parametros de plot, mar = margenes, c(bottom, left, top, right)
 plot(diagonal$n
-   , diagonal$TrainEAP
+   , diagonal$SAP
    , col = "red"
    , type = "o"
    , xlim = c(minX, maxX)
    , ylim = c(minY, maxY)
    , xlab = "Training set size"
-   , ylab = "Error percentage"
-   , lwd = 2
-   , lty = 3)
-
-lines(diagonal$n
-    , diagonal$TestEAP
-    , col = "red"
-    , type = "o"
-    , lwd = 2)
+   , ylab = "Tree size"
+   , lwd = 2)
 
 lines(parallel$n
-    , parallel$TrainEAP
-    , col = "green"
-    , type = "o"
-    , lwd = 2
-    , lty = 3)
-
-lines(parallel$n
-    , parallel$TestEAP
+    , parallel$SAP
     , col = "green"
     , type = "o"
     , lwd = 2)

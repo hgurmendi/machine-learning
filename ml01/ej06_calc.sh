@@ -9,7 +9,7 @@ set -x
 
 for g in ${GENERATORS}
 do
-    echo "C,TestEBP,TestEAP" > ${TEMP_DIR}/${FILE_STEM}_${g}.errors
+    echo "C,TestEBP,TestEAP,BayesERR" > ${TEMP_DIR}/${FILE_STEM}_${g}.errors
 
     for c in ${PARAM_C}
     do
@@ -30,6 +30,15 @@ do
             # Get every line of the output that contains the sequence "<<"
             # and append it to ${STEM_CURRENT}.raw for future processing
             grep "<<" ${STEM_PATH}_${i}.output >> ${STEM_PATH}.raw
+
+            if [ "${g}" = "diagonal" ]
+            then
+                BAYES=./ej06_bayes_diagonal.R
+            else
+                BAYES=./ej06_bayes_parallel.R
+            fi
+            
+            ${BAYES} ${STEM_PATH}_${i}.data >> ${STEM_PATH}.bayes
         done
 
         echo "Gathering data for ${STEM_PATH}..."
@@ -54,7 +63,8 @@ do
         TEST_EBP=$(cat ${STEM_PATH}.ebp | awk -F',' '{acum+=$2; ++n} END {print acum/n}')
         # TRAIN_EAP=$(cat ${STEM_PATH}.eap | awk -F',' '{acum+=$1; ++n} END {print acum/n}')
         TEST_EAP=$(cat ${STEM_PATH}.eap | awk -F',' '{acum+=$2; ++n} END {print acum/n}')
+        BAYES_ERR=$(cat ${STEM_PATH}.bayes | awk -F',' '{acum+=$1; ++n} END {print acum/n}')
 
-        echo "${c},${TEST_EBP},${TEST_EAP}" >> ${TEMP_DIR}/${FILE_STEM}_${g}.errors
+        echo "${c},${TEST_EBP},${TEST_EAP},${BAYES_ERR}" >> ${TEMP_DIR}/${FILE_STEM}_${g}.errors
     done
 done

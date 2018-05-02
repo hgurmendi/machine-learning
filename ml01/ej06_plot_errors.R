@@ -25,8 +25,8 @@ diagonal <- read.csv(args[2], header = TRUE)
 minX <- min(parallel$C, diagonal$C)
 maxX <- max(parallel$C, diagonal$C)
 
-minY <- min(parallel$TestEBP, parallel$TestEAP, diagonal$TestEBP, diagonal$TestEAP)
-maxY <- max(parallel$TestEBP, parallel$TestEAP, diagonal$TestEBP, diagonal$TestEAP)
+minY <- min(parallel$TestEBP, parallel$TestEAP, parallel$BayesERR, diagonal$TestEBP, diagonal$TestEAP, diagonal$BayesERR)
+maxY <- max(parallel$TestEBP, parallel$TestEAP, parallel$BayesERR, diagonal$TestEBP, diagonal$TestEAP, diagonal$BayesERR)
 
 # rojo -> diagonal
 # verde -> parallel
@@ -43,11 +43,26 @@ plot(diagonal$C
    , ylab = "Test error percentage"
    , lwd = 2)
 
+lines(diagonal$C
+    , diagonal$BayesERR
+    , col = "red"
+    , type = "o"
+    , lwd = 2
+    , lty = 3)
+
 lines(parallel$C
     , parallel$TestEBP
     , col = "green"
     , type = "o"
     , lwd = 2)
+
+lines(parallel$C
+    , parallel$BayesERR
+    , col = "green"
+    , type = "o"
+    , lwd = 2
+    , lty = 3)
+
 
 png("ej06_eap.png")
 par(mar=c(4,4,1,1)) # par = parametros de plot, mar = margenes, c(bottom, left, top, right)
@@ -61,8 +76,22 @@ plot(diagonal$C
    , ylab = "Test error percentage"
    , lwd = 2)
 
+lines(diagonal$C
+    , diagonal$BayesERR
+    , col = "red"
+    , type = "o"
+    , lwd = 2
+    , lty = 3)
+
 lines(parallel$C
     , parallel$TestEAP
     , col = "green"
     , type = "o"
     , lwd = 2)
+
+lines(parallel$C
+    , parallel$BayesERR
+    , col = "green"
+    , type = "o"
+    , lwd = 2
+    , lty = 3)

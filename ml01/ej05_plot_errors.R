@@ -25,8 +25,11 @@ diagonal <- read.csv(args[2], header = TRUE)
 minX <- min(parallel$n, diagonal$n)
 maxX <- max(parallel$n, diagonal$n)
 
-minY <- min(parallel$TestEBP, parallel$TrainEBP, diagonal$TrainEBP, diagonal$TestEBP)
-maxY <- max(parallel$TestEBP, parallel$TrainEBP, diagonal$TrainEBP, diagonal$TestEBP)
+minY <- min(parallel$TestEBP, parallel$TrainEBP, diagonal$TrainEBP, diagonal$TestEBP,
+            parallel$TestEAP, parallel$TrainEAP, diagonal$TrainEAP, diagonal$TestEAP)
+maxY <- max(parallel$TestEBP, parallel$TrainEBP, diagonal$TrainEBP, diagonal$TestEBP,
+            parallel$TestEAP, parallel$TrainEAP, diagonal$TrainEAP, diagonal$TestEAP)
+
 
 # rojo -> diagonal
 # verde -> parallel

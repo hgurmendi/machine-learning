@@ -11,6 +11,8 @@ for g in ${GENERATORS}
 do
     echo "C,TestEBP,TestEAP,BayesERR" > ${TEMP_DIR}/${FILE_STEM}_${g}.errors
 
+    BAYES=./ej06_bayes_${g}.R
+
     for c in ${PARAM_C}
     do
         STEM_PATH=${TEMP_DIR}/${FILE_STEM}_${g}_${c}
@@ -31,13 +33,6 @@ do
             # and append it to ${STEM_CURRENT}.raw for future processing
             grep "<<" ${STEM_PATH}_${i}.output >> ${STEM_PATH}.raw
 
-            if [ "${g}" = "diagonal" ]
-            then
-                BAYES=./ej06_bayes_diagonal.R
-            else
-                BAYES=./ej06_bayes_parallel.R
-            fi
-            
             ${BAYES} ${STEM_PATH}_${i}.data >> ${STEM_PATH}.bayes
         done
 

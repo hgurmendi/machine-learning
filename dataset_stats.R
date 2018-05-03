@@ -42,13 +42,14 @@ for (i in 1:(n - 1)) {
     sds1[i] <- sd(c1[,i])
 }
 
-message("Distribution parameters:")
-message("Class 0")
-message(paste0("mu: ", vector2point(mus0)))
-message(paste0("sd: ", vector2point(sds0)))
-message("Class 1")
-message(paste0("mu: ", vector2point(mus1)))
-message(paste0("sd: ", vector2point(sds1)))
+cat("Distribution parameters:", sep = "\n")
+cat("Class 0", sep = "\n")
+cat(paste0("mu: ", vector2point(mus0)), sep = "\n")
+cat(paste0("sd: ", vector2point(sds0)), sep = "\n")
+cat("Class 1", sep = "\n")
+cat(paste0("mu: ", vector2point(mus1)), sep = "\n")
+cat(paste0("sd: ", vector2point(sds1)), sep = "\n")
+cat("", sep="\n")
 
 # # Get bounds
 # minX <- min(data$V1)

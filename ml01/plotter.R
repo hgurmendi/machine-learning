@@ -2,7 +2,7 @@
 
 args <- commandArgs(trailingOnly=TRUE)
 if (length(args) != 2) {
-    message("USAGE: ./plotterCSV.R file_stem data|prediction")
+    message("USAGE: ./plotter.R file_stem data|prediction")
     quit()
 }
 

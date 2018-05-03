@@ -31,7 +31,7 @@ maxY <- max(parallel$SBP, parallel$SAP, diagonal$SBP, diagonal$SAP)
 # rojo -> diagonal
 # verde -> parallel
 
-png("sbp.png")
+png("ej05_sbp.png")
 par(mar=c(4,4,1,1)) # par = parametros de plot, mar = margenes, c(bottom, left, top, right)
 plot(diagonal$n
    , diagonal$SBP
@@ -51,7 +51,7 @@ lines(parallel$n
 
 # after pruning
 
-png("sap.png")
+png("ej05_sap.png")
 par(mar=c(4,4,1,1)) # par = parametros de plot, mar = margenes, c(bottom, left, top, right)
 plot(diagonal$n
    , diagonal$SAP

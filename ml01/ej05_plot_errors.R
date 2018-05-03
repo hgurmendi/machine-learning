@@ -34,7 +34,7 @@ maxY <- max(parallel$TestEBP, parallel$TrainEBP, diagonal$TrainEBP, diagonal$Tes
 # rojo -> diagonal
 # verde -> parallel
 
-png("ebp.png")
+png("ej05_ebp.png")
 par(mar=c(4,4,1,1)) # par = parametros de plot, mar = margenes, c(bottom, left, top, right)
 plot(diagonal$n
    , diagonal$TrainEBP
@@ -68,7 +68,7 @@ lines(parallel$n
 
 # after pruning
 
-png("eap.png")
+png("ej05_eap.png")
 par(mar=c(4,4,1,1)) # par = parametros de plot, mar = margenes, c(bottom, left, top, right)
 plot(diagonal$n
    , diagonal$TrainEAP

@@ -7,5 +7,5 @@ set -x
 ./ej07_gen.sh
 ./ej07_calc.sh
 
-# ./ej07_plot_errors.R ${TEMP_DIR}/${FILE_STEM}_parallel.errors ${TEMP_DIR}/${FILE_STEM}_diagonal.errors
+./ej07_plot_errors.R ${TEMP_DIR}/${FILE_STEM}_parallel.errors ${TEMP_DIR}/${FILE_STEM}_diagonal.errors
 

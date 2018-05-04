@@ -42,7 +42,7 @@ plot(diagonal$d
    , type = "o"
    , xlim = c(minX, maxX)
    , ylim = c(minY, maxY)
-   , xlab = "Training set size"
+   , xlab = "Dimensions"
    , ylab = "Error percentage"
    , lwd = 2
    , lty = 3)
@@ -76,7 +76,7 @@ plot(diagonal$d
    , type = "o"
    , xlim = c(minX, maxX)
    , ylim = c(minY, maxY)
-   , xlab = "Training set size"
+   , xlab = "Dimensions"
    , ylab = "Error percentage"
    , lwd = 2
    , lty = 3)

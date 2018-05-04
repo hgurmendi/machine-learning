@@ -39,7 +39,7 @@ plot(diagonal$C
    , type = "o"
    , xlim = c(minX, maxX)
    , ylim = c(minY, maxY)
-   , xlab = "Class overlapping"
+   , xlab = "Dispersion"
    , ylab = "Test error percentage"
    , lwd = 2)
 
@@ -72,7 +72,7 @@ plot(diagonal$C
    , type = "o"
    , xlim = c(minX, maxX)
    , ylim = c(minY, maxY)
-   , xlab = "Class overlapping"
+   , xlab = "Dispersion"
    , ylab = "Test error percentage"
    , lwd = 2)
 

@@ -2,7 +2,7 @@
 
 export HIDDEN_NEURONS="2 5 10 20 40"
 export TOTAL_TRAIN=2000
-export VALIDATION=400
+export TRAIN=1600
 export TEST=2000
 export EPOCHS=40000
 export MU=0.5
@@ -15,8 +15,8 @@ export DATASETS_DIR=datasets
 export SPIRALS=../ml00/spirals
 export BP=./bp/bp
 
-# Number of training rounds. Should be 20
-export ROUNDS=5
+# Number of training rounds. Should be 1
+export ROUNDS=1
 
 create_netfile ()
 {

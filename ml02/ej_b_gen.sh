@@ -13,12 +13,12 @@ run_training () {
     local SEED=$(gen_rand)
 
     echo "**** Running training with hidden_neurons=${HIDDEN_NEURONS}, seed=${SEED}, round=${INDEX}"
-    create_netfile 2 ${HIDDEN_NEURONS} 1 ${TOTAL_TRAIN} ${VALIDATION} ${TEST} ${EPOCHS} ${LR} ${MU} ${RECORD_RATE} 0 ${SEED} ${VERBOSITY} ${FILESTEM}.net
+    create_netfile 2 ${HIDDEN_NEURONS} 1 ${TOTAL_TRAIN} ${TRAIN} ${TEST} ${EPOCHS} ${LR} ${MU} ${RECORD_RATE} 0 ${SEED} ${VERBOSITY} ${FILESTEM}.net
 
     ln -s ${TEMP_STEM}.data ${FILESTEM}.data
     ln -s ${TEMP_STEM}.test ${FILESTEM}.test
 
-    echo ${BP} ${FILESTEM} > ${FILESTEM}.output
+    ${BP} ${FILESTEM} > ${FILESTEM}.output
 
     echo "**** Finished running training with hidden_neurons=${HIDDEN_NEURONS}, seed=${SEED}, round=${INDEX}"
 }

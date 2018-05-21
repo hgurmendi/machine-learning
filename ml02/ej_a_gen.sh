@@ -33,7 +33,7 @@ then
 fi
 
 # Clean temporary directory
-rm ${TEMP_DIR}/*
+rm -f ${TEMP_DIR}/*
 
 # Copy .data and .test files from the dataset
 cp ${DATASETS_DIR}/dos_elipses.data ${TEMP_DIR}/${TEMP_STEM}.data

@@ -1,21 +1,22 @@
 #!/bin/bash
 
-export HIDDEN_NEURONS=6
-export TOTAL_TRAIN=500
-export VALIDATION=100
+export HIDDEN_NEURONS="2 5 10 20 40"
+export TOTAL_TRAIN=2000
+export VALIDATION=400
 export TEST=2000
 export EPOCHS=40000
-export MOMENTUMS="0 0.5 0.9"
-export LEARNING_RATES="0.1 0.01 0.001"
+export MU=0.5
+export LR=0.01
 export RECORD_RATE=400
-export TEMP_DIR=temp_a
-export TEMP_STEM=a
+export TEMP_DIR=temp_b
+export TEMP_STEM=b
 export VERBOSITY=0
 export DATASETS_DIR=datasets
+export SPIRALS=../ml00/spirals
 export BP=./bp/bp
 
 # Number of training rounds. Should be 20
-export ROUNDS=20
+export ROUNDS=5
 
 create_netfile ()
 {

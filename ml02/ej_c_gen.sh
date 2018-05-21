@@ -12,7 +12,7 @@ run_training () {
     # Random seed
     local SEED=$(gen_rand)
     # Number of data patterns to be used in training, depends on the percentage
-    local TRAIN=$(expr 100 '*' ${PERCENTAGE_TRAIN} / 100)
+    local TRAIN=$(expr ${TOTAL_DATAFILE} '*' ${PERCENTAGE_TRAIN} / 100)
 
     echo "**** Running training with %_train=${PERCENTAGE_TRAIN}, seed=${SEED}, round=${INDEX}"
     create_netfile 5 40 1 100 ${TRAIN} 2000 20000 0.01 0.3 200 0 ${SEED} 0 ${FILESTEM}.net

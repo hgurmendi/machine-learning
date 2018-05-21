@@ -2,7 +2,7 @@
 
 export HIDDEN_NEURONS=6
 export TOTAL_TRAIN=500
-export VALIDATION=100
+export TRAIN=400
 export TEST=2000
 export EPOCHS=40000
 export MOMENTUMS="0 0.5 0.9"

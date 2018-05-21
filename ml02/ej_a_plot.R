@@ -23,7 +23,10 @@ png(args[2])
 
 par(mar=c(4,4,1,1))
 
-plot(x, data$mse_train, col="red", bg="red", cex=0.5, pch=21,
+min_y <- min(data$mse_train, data$mse_validation, data$mse_test)
+max_y <- max(data$mse_train, data$mse_validation, data$mse_test)
+
+plot(x, data$mse_train, col="red", bg="red", cex=0.5, pch=21, ylim=c(min_y, max_y),
 xlab="Epoch", ylab="MSE", xaxt="n")
 lines(predict(approx_train), col="red", lwd=2)
 

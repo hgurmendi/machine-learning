@@ -2,8 +2,8 @@
 
 . ./ej_a_common.sh
 
-./ej_a_gen.sh
-./ej_a_calc.sh
+# ./ej_a_gen.sh
+# ./ej_a_calc.sh
 
 for LR in ${LEARNING_RATES}
 do

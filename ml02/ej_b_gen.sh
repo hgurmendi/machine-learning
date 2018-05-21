@@ -31,7 +31,7 @@ then
 fi
 
 # Clean temporary directory
-rm ${TEMP_DIR}/*
+rm -f ${TEMP_DIR}/*
 
 # Create train and test datasets and place them in the datasets folder
 ${SPIRALS} ${TOTAL_TRAIN} ${DATASETS_DIR}/${TEMP_STEM}_train

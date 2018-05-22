@@ -12,7 +12,7 @@ export TEMP_DIR=temp_a
 export TEMP_STEM=a
 export VERBOSITY=0
 export DATASETS_DIR=datasets
-export BP=./bp/bp
+export BP=./bin/bp
 
 # Number of training rounds. Should be 20
 export ROUNDS=20

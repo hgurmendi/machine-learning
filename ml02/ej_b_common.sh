@@ -13,9 +13,9 @@ export TEMP_STEM=b
 export VERBOSITY=0
 export DATASETS_DIR=datasets
 export SPIRALS=../ml00/spirals
-export BP=./bp/bp
+export BP=./bin/bp
 export PLOTTER=./plotter.R
-export DISCRETIZA=./bp/discretiza
+export DISCRETIZA=./bin/discretiza
 
 # Number of training rounds. Should be 1
 export ROUNDS=1

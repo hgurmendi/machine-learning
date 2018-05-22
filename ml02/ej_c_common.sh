@@ -8,7 +8,7 @@ export PERCENTAGES_TRAINING="95 75 50"
 export TEMP_DIR=temp_c
 export TEMP_STEM=c
 export DATASETS_DIR=datasets
-export BP=./bp/bp
+export BP=./bin/bp
 
 # Number of training rounds. Should be 20
 export ROUNDS=5

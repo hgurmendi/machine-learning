@@ -2,14 +2,16 @@
 
 args <- commandArgs(trailingOnly = TRUE)
 
-if (length(args) != 2) {
-    message("USAGE: ./ej_a_plot.R mse_file plot_file")
+if (length(args) != 1) {
+    message("USAGE: ./ej_a_plot.R mse_file")
     quit()
 }
 
 epocas <- seq(400, 40000, 400)
 
 data <- read.table(args[1], header=FALSE)
+
+outfile <- paste(args[1], "png", sep=".")
 
 names(data) <- c("mse", "mse_train", "mse_validation", "mse_test", "disc_train", "disc_validation", "disc_test")
 
@@ -19,7 +21,7 @@ approx_train <- loess(data$mse_train~x, span=0.4)
 approx_validation <- loess(data$mse_validation~x, span=0.4)
 approx_test <- loess(data$mse_test~x, span=0.4)
 
-png(args[2])
+png(outfile)
 
 par(mar=c(4,4,1,1))
 

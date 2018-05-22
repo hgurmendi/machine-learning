@@ -1,10 +1,5 @@
 # Ignore png files:
 *.png
 
-# Ignore executable files from ml00:
-ml00/parallel
-ml00/diagonal
-ml00/spirals
-
 # Ignore every temporary directory (starting with "temp"):
 */temp*

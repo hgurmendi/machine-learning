@@ -3,7 +3,7 @@
 args <- commandArgs(trailingOnly = TRUE)
 
 if (length(args) != 1) {
-    message("USAGE: ./ej_a_plot.R mse_file")
+    message("USAGE: ./ej_c_plot.R mse_file")
     quit()
 }
 

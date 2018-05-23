@@ -41,7 +41,7 @@ int SEED;           /* semilla para la funcion rand(). Los posibles valores son:
 
 int CONTROL;        /* nivel de verbosity: 0 -> solo resumen, 1 -> 0 + pesos, 2 -> 1 + datos*/
 
-float GAMMA;        /* término de penalización para el peso */
+float GAMMA;        /* penalización para el weight decay */ 
 
 float discrete_error;
 
@@ -252,8 +252,8 @@ int arquitec(char *filename){
   /* Nivel de verbosity*/
   fscanf(b,"%d",&CONTROL);
 
-  /* Término de penalización para el peso */
-  fscanf(b,"%f",&GAMMA);
+  /* Penalización para el weight decay */
+  fscanf(b, "%f", &GAMMA);
 
   fclose(b);
 
@@ -290,7 +290,7 @@ int arquitec(char *filename){
   printf("\nFrecuencia para grabar resultados: %d EPOCAS",NERROR);
   printf("\nArchivo con sinapsis iniciales: %d.WTS",WTS); 
   printf("\nSemilla para la funcion rand(): %d",SEED);
-  printf("\nGamma: %f",GAMMA);
+  printf("\nGamma: %f", GAMMA);
   if(CONTROL){
     printf("\nSINAPSIS:\n");
     for(j=1;j<=N2;j++) {
@@ -423,8 +423,7 @@ void forward(){
 /* ------------------------------------------------------------------------------ */
 float propagar(float **S,int pat_ini,int pat_fin,int usar_seq){
 
-  float mse=0.0;
-  float mse_decay=0.0;
+  float mse=0.0, mse_decay=0.0;
   int i,j,k,patron,nu;
   discrete_error=0.;
   
@@ -450,9 +449,8 @@ float propagar(float **S,int pat_ini,int pat_fin,int usar_seq){
     
   }
 
-  /* Calculate weight decay */
   for (j = 1; j <= N2; j++) {
-    for (k = 0; k <= N3; k++) {
+    for (k = 0; k <= N1; k++) {
       mse_decay += w1[j][k] * w1[j][k];
     }
   }
@@ -526,7 +524,7 @@ int train(char *filename){
   /* Fijar parametros: la nueva variable es para poder variar el learning rate durante el entrenamiento si se desea */
   eta=ETA;
 
-  decay = 1 - 2 * GAMMA * ETA;
+  decay= 1. - 2. * GAMMA * ETA;
 
   /*efectuar shuffle inicial de los datos de entrenamiento si SEED != -1*/
   if(SEED>-1){
@@ -538,7 +536,6 @@ int train(char *filename){
   for (iter=1; iter<=ITER; iter++) {
 
     mse = 0.0;
-
     mse_decay = 0.0;
 
     shuffle(PR);
@@ -573,13 +570,17 @@ int train(char *filename){
 	  /*calcular dw2 y corregir w2*/
 	  for( i = 1 ;i<= N3;i++) for( j = 0 ;j<= N2;j++){
 		dw2[i][j]= u * dw2[i][j] + eta * grad3[i] * x2[j];
+        w2[i][j] *= decay;
 		w2[i][j] += dw2[i][j];
+        mse_decay += w2[i][j] * w2[i][j];
 	  }
 
 	  /*calcular dw1 y corregir w1*/
 	  for( j = 1 ;j<= N2;j++) for( k = 0 ;k<= N1;k++){
 		dw1[j][k]= u * dw1[j][k] + eta * grad2[j] * x1[k];
+        w1[j][k] *= decay;
 		w1[j][k] += dw1[j][k];
+        mse_decay += w1[j][k] * w1[j][k];
 	  }
 
 	  /*actualizar el mse*/
@@ -593,6 +594,7 @@ int train(char *filename){
     /* controles: grabar error cada NERROR iteraciones*/
     if ((iter/NERROR)*NERROR == iter) {
       mse /= ((float)PR);
+      mse += GAMMA * mse_decay;
       mse_train=propagar(data,0,PR,1);
       disc_train=discrete_error;
       /*calcular mse de validacion; si no hay, usar mse_train*/
@@ -609,7 +611,7 @@ int train(char *filename){
              disc_test=discrete_error;
       }else  mse_test = disc_test = 0.;
       fprintf(ferror,"%f\t%f\t%f\t%f\t",mse,mse_train,mse_valid,mse_test);
-      fprintf(ferror,"%f\t%f\t%f\n",disc_train,disc_valid,disc_test);
+      fprintf(ferror,"%f\t%f\t%f\t%f\n",disc_train,disc_valid,disc_test,mse_decay * GAMMA);
       if(CONTROL) fflush(NULL);
       if(mse_valid<minimo_valid){
 	sinapsis_save(WTS+1);

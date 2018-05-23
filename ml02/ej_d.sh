@@ -7,5 +7,5 @@
 
 for GAMMA in ${GAMMAS}
 do
-    echo "Plotear: ${TEMP_DIR}/${TEMP_STEM}_${GAMMA}.mse.avg"
+    ./ej_d_plot.R ${TEMP_DIR}/${TEMP_STEM}_${GAMMA}.mse.avg
 done

@@ -14,7 +14,7 @@ export VERBOSITY=0
 export DATASETS_DIR=datasets
 export SPIRALS=../ml00/spirals
 export BP=./bin/bp
-export PLOTTER=./ej_b_plotter.R
+export PLOTTER=./ej_b_plot.R
 export DISCRETIZA=./bin/discretiza
 
 # Number of training rounds. Should be 1

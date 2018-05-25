@@ -4,15 +4,17 @@ export TEMP_DIR=temp_e
 export TEMP_STEM=e
 export GENERATORS_NAMES="diagonal parallel"
 export GENERATORS_DIR="../ml00/"
-export GENERATORS_PARAM_C=0.78
-export GENERATORS_PARAM_d="2 4 8 16 32"
-export GENERATORS_PARAM_TRAIN=10000
+export GENERATORS_C=0.78
+export GENERATORS_d="2 4 8 16 32"
 export TOTAL_DATA=250
-export TOTAL_TRAINING=200
+export TOTAL_TRAIN=200
+export TOTAL_TEST=10000
+export EPOCHS=40000
+export RECORD_RATE=400
 export BP=./bin/bp
 
 # Number of training rounds. Should be 20
-export ROUNDS=20
+export ROUNDS=3
 
 create_netfile ()
 {
@@ -48,7 +50,7 @@ create_netfile ()
     # Verbosity level
     local CONTROL=${13}
     # Filename for the netfile
-    local FILE=${15}
+    local FILE=${14}
 
     rm -f ${FILE}
 

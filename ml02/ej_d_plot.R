@@ -31,8 +31,25 @@ lines(predict(approx_train), col="red", lwd=2)
 
 axis(1, at=seq(0,500,100), labels=c("0", "20000", "40000", "60000", "80000", "100000"))
 
-points(x, data$mse_test, col="blue", bg="blue", cex=0.5, pch=21)
-lines(predict(approx_test), col="blue", lwd=2)
+points(x, data$mse_test, col="green", bg="green", cex=0.5, pch=21)
+lines(predict(approx_test), col="green", lwd=2)
 
-legend(x="topright", legend=c("Train", "Test"), col=c("red", "blue"), lwd=2)
+legend(x="topright", legend=c("Train", "Test"), col=c("red", "green"), lwd=2)
+
+# Plot weight decay
+
+outfileDecay <- paste(args[1], "decay", "png", sep=".")
+
+min_y <- min(data$weight_decay)
+max_y <- max(data$weight_decay)
+
+approx_decay <- loess(data$weight_decay~x, span=0.4)
+
+png(outfileDecay)
+plot(x, data$weight_decay, col="black", bg="black", cex=0.5, pch=21, ylim=c(min_y, max_y),
+xlab="Epoch", ylab="Decay")
+lines(predict(approx_decay), col="black", lwd=2)
+
+
+
 

@@ -14,7 +14,7 @@ export RECORD_RATE=400
 export BP=./bin/bp
 
 # Number of training rounds. Should be 20
-export ROUNDS=10
+export ROUNDS=20
 
 create_netfile ()
 {

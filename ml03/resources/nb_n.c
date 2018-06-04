@@ -34,6 +34,9 @@ int N_TOTAL;            /*Numero de patrones a usar durante el entrenamiento */
 
 /*matrices globales  DECLARAR ACA LAS MATRICES NECESARIAS */
 
+double **mus;           /* Matriz de medias */
+double **sigmas;        /* Matriz de varianzas */
+
 double **data;          /* train data */
 double **test;          /* test  data */
 int *pred;              /* clases predichas */
@@ -81,6 +84,27 @@ int define_matrix()
     }
 
 /*ALLOCAR ESPACIO PARA LAS MATRICES DEL ALGORITMO*/
+    mus = (double **) calloc(N_Class, sizeof(double *));
+    if (mus == NULL) {
+        return 1;
+    }
+    for (i = 0; i < N_Class; i++) {
+        mus[i] = (double *) calloc(N_IN, sizeof(double));
+        if (mus[i] == NULL) {
+            return 1;
+        }
+    }
+
+    sigmas = (double **) calloc(N_Class, sizeof(double *));
+    if (sigmas == NULL) {
+        return 1;
+    }
+    for (i = 0; i < N_Class; i++) {
+        sigmas[i] = (double *) calloc(N_Class, sizeof(double));
+        if (sigmas[i] == NULL) {
+            return 1;
+        }
+    }
 
     return 0;
 }
@@ -141,7 +165,7 @@ int arquitec(char *filename)
     printf("\nCantidad de patrones de entrenamiento: %d", PR);
     printf("\nCantidad de patrones de validacion: %d", PTOT - PR);
     printf("\nCantidad de patrones de test: %d", PTEST);
-    printf("\nSemilla para la funcion rand(): %d", SEED);
+    printf("\nSemilla para la funcion rand(): %d\n", SEED);
 
     return 0;
 }
@@ -254,7 +278,7 @@ void shuffle(int hasta)
 double prob(double x, int feature, int clase)
 {
 
-     /*IMPLEMENTAR*/ return prob;
+     /*IMPLEMENTAR*/ return 1;
 }
 
 /* ------------------------------------------------------------------------------ */
@@ -277,7 +301,7 @@ int output(double *input)
             prob_de_clase += log(prob(input[i], i, k));
 
         /*agrega la probabilidad a priori de la clase */
-         /*COMPLETAR*/ prob_de_clase += log( ...);
+         /*COMPLETAR*/ //prob_de_clase += log( ...);
 
         /*guarda la clase con prob maxima */
         if (prob_de_clase >= max_prob) {
@@ -329,6 +353,17 @@ double propagar(double **S, int pat_ini, int pat_fin, int usar_seq)
     return mse;
 }
 
+void print_vector(double *v, int n)
+{
+    int i;
+
+    printf("(%lf", v[0]);
+    for (i = 1; i < n; i++) {
+        printf(", %lf", v[i]);
+    }
+    printf(")");
+}
+
 /* --------------------------------------------------------------------------------------- */
 /*train: ajusta los parametros del algoritmo a los datos de entrenamiento
          guarda los parametros en un archivo de control
@@ -355,8 +390,50 @@ int train(char *filename)
     }
 
     /*Calcular probabilidad intrinseca de cada clase */
+    int *cant_clase = (int *) calloc(N_Class, sizeof(int));
+    if (cant_clase == NULL) {
+        fprintf(stderr, "ERROR allocando arreglo para ocurrencias de clases.\n");
+        exit(1);
+    }
+
+    for (i = 0; i < N_TOTAL; i++) {
+        cant_clase[(int) data[i][N_IN]]++;
+    }
+
+    for (i = 0; i < N_Class; i++) {
+        printf("Cantidad de patrones de clase %d: %d (%lf%%)\n", i, cant_clase[i], (((double) cant_clase[i]) / N_TOTAL) * 100.);
+    }
 
     /*Calcular media y desv.est. por clase y cada atributo */
+    
+    /* Calcular media por clase y por atributo */
+
+    /* Calculo el acumulado de cada atributo y lo almaceno en mus, según la clase. */
+    for (i = 0; i < N_TOTAL; i++) {
+        for (j = 0; j < N_IN; j++) {
+            // clase: (int) data[i][N_IN]
+            mus[(int) data[i][N_IN]][j] += data[i][j];
+        }
+    }
+    
+    /* Luego divido al acumulado de cada atributo de cada clase por la cantidad de ocurrencias de la clase. */
+    for (i = 0; i < N_Class; i++) {
+        for (j = 0; j < N_IN; j++) {
+            mus[i][j] /= cant_clase[i];
+        }
+    }
+
+    for (i = 0; i < N_Class; i++) {
+        printf("Medias de la clase %d: ", i);
+        print_vector(mus[i], N_IN);
+        printf("\n");
+    }
+
+    /* Calcular varianza por clase y por atributo */
+    for (i = 0; i < N_TOTAL; i++) {
+        
+    }
+
 
     /*calcular error de entrenamiento */
     train_error = propagar(data, 0, PR, 1);
@@ -400,7 +477,7 @@ int train(char *filename)
 /* ----------------------------------------------------------------------------------------------------- */
 int main(int argc, char **argv)
 {
-
+    
     if (argc != 2) {
         printf
             ("Modo de uso: nb <filename>\ndonde filename es el nombre del archivo (sin extension)\n");

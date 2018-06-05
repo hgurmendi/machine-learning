@@ -423,6 +423,7 @@ int train(char *filename)
         }
     }
 
+    /* Imprimo las medias de cada clase  */
     for (i = 0; i < N_Class; i++) {
         printf("Medias de la clase %d: ", i);
         print_vector(mus[i], N_IN);
@@ -430,10 +431,27 @@ int train(char *filename)
     }
 
     /* Calcular varianza por clase y por atributo */
+
+    /* Calculo el acumulado de las diferencias entre cada atributo y su media y lo almaceno en sigmas, según la clase. */
     for (i = 0; i < N_TOTAL; i++) {
-        
+        for (j = 0; j < N_IN; j++) {
+            sigmas[(int) data[i][N_IN]][j] += pow(data[i][j] - mus[(int) data[i][N_IN]][j], 2);
+        }
     }
 
+    /* Luego divido el acumulado de las diferencias por la cantidad de ocurrencias de la clase. */
+    for (i = 0; i < N_Class; i++) {
+        for (j = 0; j < N_IN; j++) {
+            sigmas[i][j] /= cant_clase[i] - 1;
+        }
+    }
+
+    /* Imprimo las varianzas de cada clase */
+    for (i = 0; i < N_Class; i++) {
+        printf("Varianzas de la clase %d: ", i);
+        print_vector(sigmas[i], N_IN);
+        printf("\n");
+    }
 
     /*calcular error de entrenamiento */
     train_error = propagar(data, 0, PR, 1);

@@ -102,7 +102,7 @@ int define_matrix()
         return 1;
     }
     for (i = 0; i < N_Class; i++) {
-        variances[i] = (double *) calloc(N_Class, sizeof(double));
+        variances[i] = (double *) calloc(N_IN, sizeof(double));
         if (variances[i] == NULL) {
             return 1;
         }
@@ -310,7 +310,7 @@ int output(double *input)
             prob_de_clase += log(prob(input[i], i, k));
 
         /*agrega la probabilidad a priori de la clase */
-         /*COMPLETAR*/ prob_de_clase += log(((double) cant_clase[k])/PR);
+        prob_de_clase += log(((double) cant_clase[k])/PR);
 
         /*guarda la clase con prob maxima */
         if (prob_de_clase >= max_prob) {
@@ -408,47 +408,33 @@ int train(char *filename)
 
     /*Calcular media y desv.est. por clase y cada atributo */
     
-    /* Calcular media por clase y por atributo */
-
-    /* Calculo el acumulado de cada atributo y lo almaceno en mus, según la clase. */
     for (i = 0; i < N_TOTAL; i++) {
         for (j = 0; j < N_IN; j++) {
             // clase: (int) data[i][N_IN]
             mus[(int) data[seq[i]][N_IN]][j] += data[seq[i]][j];
         }
     }
-    
-    /* Luego divido al acumulado de cada atributo de cada clase por la cantidad de ocurrencias de la clase. */
     for (i = 0; i < N_Class; i++) {
         for (j = 0; j < N_IN; j++) {
             mus[i][j] /= cant_clase[i];
         }
     }
-
-    /* Imprimo las medias de cada clase  */
     for (i = 0; i < N_Class; i++) {
         printf("Medias de la clase %d: ", i);
         print_vector(mus[i], N_IN);
         printf("\n");
     }
 
-    /* Calcular varianza por clase y por atributo */
-
-    /* Calculo el acumulado de las diferencias entre cada atributo y su media y lo almaceno en variances, según la clase. */
     for (i = 0; i < N_TOTAL; i++) {
         for (j = 0; j < N_IN; j++) {
             variances[(int) data[seq[i]][N_IN]][j] += pow(data[seq[i]][j] - mus[(int) data[seq[i]][N_IN]][j], 2);
         }
     }
-
-    /* Luego divido el acumulado de las diferencias por la cantidad de ocurrencias de la clase. */
     for (i = 0; i < N_Class; i++) {
         for (j = 0; j < N_IN; j++) {
             variances[i][j] /= cant_clase[i] - 1;
         }
     }
-
-    /* Imprimo las varianzas de cada clase */
     for (i = 0; i < N_Class; i++) {
         printf("Varianzas de la clase %d: ", i);
         print_vector(variances[i], N_IN);

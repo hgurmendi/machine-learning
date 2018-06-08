@@ -1,0 +1,10 @@
+diagonal, 2, 50.000000
+diagonal, 4, 54.680002
+diagonal, 8, 18.940000
+diagonal, 16, 38.589999
+diagonal, 32, 17.020001
+parallel, 2, 50.000000
+parallel, 4, 50.000000
+parallel, 8, 50.000000
+parallel, 16, 50.000000
+parallel, 32, 15.400000

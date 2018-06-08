@@ -2,63 +2,107 @@
 
 args <- commandArgs(trailingOnly = TRUE)
 
-if (length(args) != 2) {
-    message("USAGE: ./ej02_plot.R diagonal_errors parallel_errors")
+if (length(args) != 5) {
+    message("USAGE: ./ej02_plot.R trees_diagonal_errors trees_parallel_errors anns_errors bayes_diagonal_errors bayes_parallel_errors")
     quit()
 }
 
-message("diagonal")
-message(args[2])
-
-message("parallel")
+message("Trees diagonal errors file:")
 message(args[1])
+message("Trees parallel errors file:")
+message(args[2])
+message("Neural network errors file:")
+message(args[3])
+message("Bayes diagonal errors file:")
+message(args[4])
+message("Bayes parallel errors file:")
+message(args[5])
 
-diagonal <- read.csv(args[1], header = TRUE)
-parallel <- read.csv(args[2], header = TRUE)
+trees_diagonal <- read.csv(args[1], header = TRUE)
+trees_parallel <- read.csv(args[2], header = TRUE)
+anns           <- read.csv(args[3], header = FALSE)
+bayes_diagonal <- read.csv(args[4], header = TRUE)
+bayes_parallel <- read.csv(args[5], header = TRUE)
 
-minX <- min(parallel$d, diagonal$d)
-maxX <- max(parallel$d, diagonal$d)
+anns_diagonal  <- subset(anns, V1=="diagonal")
+anns_parallel  <- subset(anns, V1=="parallel")
 
-minY <- min(diagonal$Train, diagonal$Validation, diagonal$Test,
-            parallel$Train, parallel$Validation, parallel$Test)
+trees_diagonal
+trees_parallel
+bayes_diagonal
+bayes_parallel
+anns_diagonal
+anns_parallel
 
-maxY <- max(diagonal$Train, diagonal$Validation, diagonal$Test,
-            parallel$Train, parallel$Validation, parallel$Test)
 
-# red -> train
-# green -> test
-# solid > diagonal
-# dashed -> parallel
 
+
+
+
+
+minX <- min(trees_diagonal$d)
+maxX <- max(trees_diagonal$d)
+
+minY <- min(trees_diagonal$TrainEBP, trees_parallel$TrainEBP,
+            anns_diagonal$V3, anns_parallel$V3,
+            bayes_diagonal$Train, bayes_parallel$Train)
+
+maxY <- max(trees_diagonal$TrainEBP, trees_parallel$TrainEBP,
+            anns_diagonal$V3, anns_parallel$V3,
+            bayes_diagonal$Train, bayes_parallel$Train)
+
+# red       -> diagonal
+# green     -> parallel
+# solid     -> trees
+# dashed    -> neural network
+# dotted    -> naive bayes
+
+message("asdf")
 png("ej02.png")
 par(mar=c(4,4,1,1)) # par = parametros de plot, mar = margenes, c(bottom, left, top, right)
-plot(diagonal$d
-   , diagonal$Train
+plot(trees_diagonal$d
+   , trees_diagonal$TrainEBP
    , col = "red"
    , type = "o"
    , xlim = c(minX, maxX)
    , ylim = c(minY, maxY)
    , xlab = "Dimensions"
-   , ylab = "Error percentage"
+   , ylab = "Train error percentage"
    , lwd = 2
    , lty = 1)
-
-lines(diagonal$d
-    , diagonal$Test
+message("asdf2")
+lines(trees_parallel$d
+    , trees_parallel$TrainEBP
     , col = "green"
     , type = "o"
     , lwd = 2
     , lty = 1)
+message("asdf3")
+lines(anns_diagonal$V2
+    , anns_diagonal$V3
+    , col = "red"
+    , type = "o"
+    , lwd = 2
+    , lty = 2)
+message("asdf4")
+lines(anns_parallel$V2
+    , anns_parallel$V3
+    , col = "green"
+    , type = "o"
+    , lwd = 2
+    , lty = 2)
 
-lines(parallel$d
-    , parallel$Train
+message("asdf5")
+
+lines(bayes_diagonal$d
+    , bayes_diagonal$Train
     , col = "red"
     , type = "o"
     , lwd = 2
     , lty = 3)
 
-lines(parallel$d
-    , parallel$Test
+lines(bayes_parallel$d
+    , bayes_parallel$Train
     , col = "green"
     , type = "o"
     , lwd = 2

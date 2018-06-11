@@ -57,7 +57,6 @@ maxY <- max(trees_diagonal$TrainEBP, trees_parallel$TrainEBP,
 # dashed    -> neural network
 # dotted    -> naive bayes
 
-message("asdf")
 png("ej02.png")
 par(mar=c(4,4,1,1)) # par = parametros de plot, mar = margenes, c(bottom, left, top, right)
 plot(trees_diagonal$d
@@ -70,29 +69,27 @@ plot(trees_diagonal$d
    , ylab = "Train error percentage"
    , lwd = 2
    , lty = 1)
-message("asdf2")
+
 lines(trees_parallel$d
     , trees_parallel$TrainEBP
     , col = "green"
     , type = "o"
     , lwd = 2
     , lty = 1)
-message("asdf3")
+
 lines(anns_diagonal$V2
     , anns_diagonal$V3
     , col = "red"
     , type = "o"
     , lwd = 2
     , lty = 2)
-message("asdf4")
+
 lines(anns_parallel$V2
     , anns_parallel$V3
     , col = "green"
     , type = "o"
     , lwd = 2
     , lty = 2)
-
-message("asdf5")
 
 lines(bayes_diagonal$d
     , bayes_diagonal$Train

@@ -34,22 +34,16 @@ bayes_parallel
 anns_diagonal
 anns_parallel
 
-
-
-
-
-
-
 minX <- min(trees_diagonal$d)
 maxX <- max(trees_diagonal$d)
 
-minY <- min(trees_diagonal$TrainEBP, trees_parallel$TrainEBP,
+minY <- min(trees_diagonal$TestEBP, trees_parallel$TestEBP,
             anns_diagonal$V3, anns_parallel$V3,
-            bayes_diagonal$Train, bayes_parallel$Train)
+            bayes_diagonal$Test, bayes_parallel$Test)
 
-maxY <- max(trees_diagonal$TrainEBP, trees_parallel$TrainEBP,
+maxY <- max(trees_diagonal$TestEBP, trees_parallel$TestEBP,
             anns_diagonal$V3, anns_parallel$V3,
-            bayes_diagonal$Train, bayes_parallel$Train)
+            bayes_diagonal$Test, bayes_parallel$Test)
 
 # red       -> diagonal
 # green     -> parallel
@@ -60,18 +54,18 @@ maxY <- max(trees_diagonal$TrainEBP, trees_parallel$TrainEBP,
 png("ej02.png")
 par(mar=c(4,4,1,1)) # par = parametros de plot, mar = margenes, c(bottom, left, top, right)
 plot(trees_diagonal$d
-   , trees_diagonal$TrainEBP
+   , trees_diagonal$TestEBP
    , col = "red"
    , type = "o"
    , xlim = c(minX, maxX)
    , ylim = c(minY, maxY)
    , xlab = "Dimensions"
-   , ylab = "Train error percentage"
+   , ylab = "Test error percentage"
    , lwd = 2
    , lty = 1)
 
 lines(trees_parallel$d
-    , trees_parallel$TrainEBP
+    , trees_parallel$TestEBP
     , col = "green"
     , type = "o"
     , lwd = 2
@@ -92,14 +86,14 @@ lines(anns_parallel$V2
     , lty = 2)
 
 lines(bayes_diagonal$d
-    , bayes_diagonal$Train
+    , bayes_diagonal$Test
     , col = "red"
     , type = "o"
     , lwd = 2
     , lty = 3)
 
 lines(bayes_parallel$d
-    , bayes_parallel$Train
+    , bayes_parallel$Test
     , col = "green"
     , type = "o"
     , lwd = 2

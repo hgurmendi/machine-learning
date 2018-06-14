@@ -12,6 +12,7 @@ LR=0.01
 MU=0.5
 DATASET_STEM=resources/dos_elipses
 BP_PATH=../ml02/bin/bp
+PLOTTER_PATH=./ej03_plotter.R
 
 create_nbfile ()
 {

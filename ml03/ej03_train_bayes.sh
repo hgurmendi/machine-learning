@@ -2,8 +2,6 @@
 
 . ./ej03_common.sh
 
-set -x
-
 # dos_elipses
 echo "*** Training dataset dos_elipses with NB"
 

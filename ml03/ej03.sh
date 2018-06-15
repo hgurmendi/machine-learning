@@ -7,3 +7,5 @@
 ./ej03_train_ann.sh
 ./ej03_train_bayes.sh
 
+./ej03_plot.sh
+

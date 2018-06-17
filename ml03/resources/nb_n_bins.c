@@ -13,7 +13,6 @@ PMG - Ultima revision: 20/06/2001
 
 #define LOW 1.e-14      /*Minimo valor posible para una probabilidad */
 #define PI  3.141592653
-#define N_BINS 10
 
 int N_IN;               /*Total numbre of inputs */
 int N_Class;            /*Total number of classes (outputs) */
@@ -32,6 +31,8 @@ int SEED;               /* semilla para la funcion rand(). Los posibles valores 
 int CONTROL;            /* nivel de verbosity: 0 -> solo resumen, 1 -> 0 + pesos, 2 -> 1 + datos */
 
 int N_TOTAL;            /*Numero de patrones a usar durante el entrenamiento */
+
+int N_BINS;             /* Cantidad de bins a utilizar para el histograma */
 
 /*matrices globales  DECLARAR ACA LAS MATRICES NECESARIAS */
 
@@ -176,6 +177,9 @@ int arquitec(char *filename)
     /* Nivel de verbosity */
     fscanf(b, "%d", &CONTROL);
 
+    /* Cantidad de bins */
+    fscanf(b, "%d", &N_BINS);
+
     fclose(b);
 
     /*Paso 2: Definir matrices para datos y parametros (e inicializarlos */
@@ -200,6 +204,7 @@ int arquitec(char *filename)
     printf("\nCantidad de patrones de validacion: %d", PTOT - PR);
     printf("\nCantidad de patrones de test: %d", PTEST);
     printf("\nSemilla para la funcion rand(): %d\n", SEED);
+    printf("\nCantidad de bins: %d\n", N_BINS);
 
     return 0;
 }

@@ -7,17 +7,6 @@ if (length(args) != 5) {
     quit()
 }
 
-message("Trees diagonal errors file:")
-message(args[1])
-message("Trees parallel errors file:")
-message(args[2])
-message("Neural network errors file:")
-message(args[3])
-message("Bayes diagonal errors file:")
-message(args[4])
-message("Bayes parallel errors file:")
-message(args[5])
-
 trees_diagonal <- read.csv(args[1], header = TRUE)
 trees_parallel <- read.csv(args[2], header = TRUE)
 anns           <- read.csv(args[3], header = FALSE)
@@ -26,13 +15,6 @@ bayes_parallel <- read.csv(args[5], header = TRUE)
 
 anns_diagonal  <- subset(anns, V1=="diagonal")
 anns_parallel  <- subset(anns, V1=="parallel")
-
-trees_diagonal
-trees_parallel
-bayes_diagonal
-bayes_parallel
-anns_diagonal
-anns_parallel
 
 minX <- min(trees_diagonal$d)
 maxX <- max(trees_diagonal$d)
@@ -98,4 +80,12 @@ lines(bayes_parallel$d
     , type = "o"
     , lwd = 2
     , lty = 3)
+
+legend(x="topleft"
+     , legend=c("DT Diagonal", "DT Parallel", "ANN Diagonal", "ANN Parallel", "NB Diagonal", "NB Parallel")
+     , col=c("red", "green", "red", "green", "red", "green")
+     , lwd=2
+     , lty=c(1, 1, 2, 2, 3, 3))
+
+
 

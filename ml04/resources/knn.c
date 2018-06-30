@@ -307,7 +307,7 @@ void shuffle(int hasta)
 /* Calcula la clase más común entre los K vecinos más cercanos. */
 int most_common_class(tuple *neighbours)
 {
-    int i;
+    int i, class;
     tuple *class_count = NULL;
 
     class_count = (tuple *) calloc(N_Class, sizeof(tuple));
@@ -331,7 +331,11 @@ int most_common_class(tuple *neighbours)
     qsort(class_count, N_Class, sizeof(tuple), tuple_compare);
 
     // ... con lo cual la mas ocurrente queda en el ultimo elemento.
-    return class_count[N_Class - 1].class;
+    class = class_count[N_Class - 1].class;
+
+    free(class_count);
+
+    return class;
 }
 
 /* ------------------------------------------------------------------------------ */
@@ -339,7 +343,7 @@ int most_common_class(tuple *neighbours)
 /* ------------------------------------------------------------------------------ */
 int output(double *input, int is_training_set)
 {
-    int i, nu;
+    int i, nu, class;
 
     /* neighbours es un arreglo unidimensional de tuplas (clase, distancia) de los puntos del conjunto
     de entrenamiento al punto que se quiere clasificar. */
@@ -362,7 +366,11 @@ int output(double *input, int is_training_set)
 
     qsort(neighbours, PR, sizeof(tuple), tuple_compare);
 
-    return most_common_class(neighbours);    
+    class = most_common_class(neighbours);
+
+    free(neighbours);
+
+    return class;
 }
 
 /* ------------------------------------------------------------------------------ */

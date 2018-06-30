@@ -1,2 +1,2 @@
 all:
-	gcc -o knn -g knn.c -lm
+	gcc -o knn -g knn.c -lm -Wall

@@ -189,7 +189,7 @@ int arquitec(char *filename)
 
     /*Imprimir control por pantalla */
     printf
-        ("\nNaive Bayes con distribuciones normales:\nCantidad de entradas:%d",
+        ("\nK-nearby neighbours:\nCantidad de entradas:%d",
          N_IN);
     printf("\nCantidad de clases:%d", N_Class);
     printf("\nArchivo de patrones: %s", filename);
@@ -198,7 +198,8 @@ int arquitec(char *filename)
     printf("\nCantidad de patrones de validacion: %d", PTOT - PR);
     printf("\nCantidad de patrones de test: %d", PTEST);
     printf("\nSemilla para la funcion rand(): %d", SEED);
-    printf("\nK: %d", K);
+    printf("\nCantidad de vecinos: %d\n", K);
+    printf("Si K=0 se entrena variando K de 1 a PR/4.\n");
 
     return 0;
 }
@@ -414,10 +415,12 @@ double propagar(double **S, int pat_ini, int pat_fin, int usar_seq, int is_train
 int train(char *filename)
 {
 
-    int i, j, k, feature, clase;
-    double sigma, me;
+    int i, k;
+    int start_k, end_k;
+    int min_valid_k;
+    double min_valid_err, min_validtest_err;
     double train_error, valid_error, test_error;
-    FILE *salida, *fpredic;
+    FILE *fpredic;
 
     /*Asigno todos los patrones del .data como entrenamiento porque este metodo no requiere validacion */
     //N_TOTAL = PTOT;
@@ -431,88 +434,79 @@ int train(char *filename)
         shuffle(PTOT);
     }
 
-//    /* neighbours es un arreglo unidimensional de tuplas (clase, distancia) de los puntos del conjunto
-//    de entrenamiento al punto que se quiere clasificar. */
-//    tuple *neighbours = NULL;
-//    neighbours = (tuple *) calloc(PTOT, sizeof(tuple));
-//    if (neighbours == NULL) {
-//        fprintf(stderr, "Error reservando memoria para neighbours.!\n");
-//        exit(1);
-//    }
-//
-//    train_error = 0.0;
-//
-//    debug = 0;
-//
-//    for (i = 0; i < PTOT; i++) {
-//        if (debug) {
-//            printf("*** Clasificando data[%d] ", i);
-//            print_vector(data[i], N_IN);
-//            printf("- clase %d\n", (int) data[i][N_IN]);
-//        }
-//
-//        for (j = 0; j < PTOT; j++) {
-//            if (i == j) { /* Mismo punto, distancia grande */
-//                neighbours[j].dist = 1e10;
-//            } else {
-//                neighbours[j].dist = distance(data[i], data[j], N_IN);
-//            }
-//            neighbours[j].class = (int) data[j][N_IN];
-//
-//            if (debug) {
-//                printf("****** Distancia a data[%d] ", j);
-//                print_vector(data[j], N_IN);
-//                printf(": %f - clase %d\n", neighbours[j].dist, neighbours[j].class);
-//            }
-//        }
-//
-//            printf("****** Ordenando arreglo de vecinos ascendentemente segun la distancia\n");
-//        }
-//
-//        qsort(neighbours, PTOT, sizeof(tuple), tuple_compare);
-//
-//        if (debug) {
-//            for (j = 0; j < PTOT; j++) {
-//                printf("****** Distancia al vecino %d: %f - clase %d\n", j, neighbours[j].dist, neighbours[j].class);
-//            }
-//        }
-//
-//        pred[i] = clase_mas_ocurrente(neighbours);
-//
-//        if (pred[i] != (int) data[i][N_IN]) {
-//            train_error += 1.;
-//        }
-//        
-//        if (debug) {
-//            printf("****** Clase mas ocurrente entre los vecinos: %d\n", pred[i]);
-//            printf("****** Clase del punto a clasificar: %d\n", (int) data[i][N_IN]);
-//        }
-//    }
-//    
-//    train_error = train_error / (double) PTOT;
 
-    train_error = propagar(data, 0, PR, 1, 1);
-
-    /*calcular error de validacion; si no hay, usar mse_train */
-    if (PR == PTOT) {
-        valid_error = train_error;
+    if (K == 0) {
+        start_k = 1;
+        end_k = PR / 4;
     } else {
-        valid_error = propagar(data, PR, PTOT, 1, 1);
+        start_k = K;
+        end_k = K + 1;
     }
 
-    /*calcular error de test (si hay) */
-    if (PTEST > 0) {
-        test_error = propagar(test, 0, PTEST, 0, 0);
-    } else {
-        test_error = 0.;
+    sprintf(filepat, "%s.errors", filename);
+    fpredic = fopen(filepat, "w");
+    error = (fpredic == NULL);
+    if (error) {
+        printf("Error al abrir archivo para guardar errores\n");
+        return 1;
     }
-     /*mostrar errores */
-    printf("\nFin del entrenamiento.\n\n");
-    printf("Errores:\nEntrenamiento:%f%%\n", train_error * 100.);
-    printf("Validacion:%f%%\nTest:%f%%\n", valid_error * 100.,
-           test_error * 100.);
-    if (CONTROL)
-        fflush(NULL);
+
+    /* Table header */
+    fprintf(fpredic, "K,Train,Validation,Test\n");
+
+    min_valid_k = -1;
+    min_valid_err = 1e10;
+    min_validtest_err = 1e10;
+
+    for (K = start_k; K < end_k; K++) {
+        printf("*** Entrenando con K = %d\n", K);
+
+        train_error = propagar(data, 0, PR, 1, 1);
+    
+        /*calcular error de validacion; si no hay, usar mse_train */
+        if (PR == PTOT) {
+            valid_error = train_error;
+        } else {
+            valid_error = propagar(data, PR, PTOT, 1, 1);
+        }
+    
+        /*calcular error de test (si hay) */
+        if (PTEST > 0) {
+            test_error = propagar(test, 0, PTEST, 0, 0);
+        } else {
+            test_error = 0.;
+        }
+        
+        train_error *= 100.;
+        valid_error *= 100.;
+        test_error *= 100.;
+
+        if (valid_error < min_valid_err) {
+            min_valid_err = valid_error;
+            min_validtest_err = test_error;
+            min_valid_k = K;
+        } else if (valid_error == min_valid_err && test_error < min_validtest_err) {
+            min_validtest_err = test_error;
+            min_valid_k = K;
+        }
+
+        fprintf(fpredic, "%d,%f,%f,%f\n", K, train_error, valid_error, test_error);
+        printf("*** Fin de entrenamiento con K = %d (min %d). Train = %f, Validation = %f, Test = %f\n", K, min_valid_k, train_error, valid_error, test_error);
+        if (CONTROL)
+            fflush(NULL);
+
+        /* Shuffle the access vector? */
+        // shuffle(PTOT);
+    }
+
+    fprintf(fpredic, "Minimo error en validacion con K = %d, %f\n", min_valid_k, min_valid_err);
+
+    fclose(fpredic);
+    
+    K = min_valid_k;
+
+    /* Volvemos a entrenar el conjunto de test para el de menor validacion because why TF not */
+    propagar(test, 0, PTEST, 0, 0);
 
     /* archivo de predicciones */
     sprintf(filepat, "%s.predic", filename);

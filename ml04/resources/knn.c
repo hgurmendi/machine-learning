@@ -149,7 +149,7 @@ int arquitec(char *filename)
     time_t t;
 
     /*Paso 1:leer el archivo con la configuracion */
-    sprintf(filepat, "%s.nb", filename);
+    sprintf(filepat, "%s.knn", filename);
     b = fopen(filepat, "r");
     error = (b == NULL);
     if (error) {

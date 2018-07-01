@@ -47,12 +47,13 @@ char filepat[100];
 /*bandera de error*/
 int error;
 
-/*  */
+/* guarda datos sobre los vecinos */
 typedef struct _tuple {
     int class;
     double dist;
 } tuple;
 
+/* imprime un vector v de n doubles */
 void print_vector(double *v, int n)
 {
     int i;
@@ -64,6 +65,8 @@ void print_vector(double *v, int n)
     printf(")");
 }
 
+/* función comparación entre datos del tipo tuple */
+/* se comparan los miembros dist */
 int tuple_compare(const void *a, const void *b)
 {
     tuple _a = *(tuple *) a;
@@ -82,7 +85,7 @@ int tuple_compare(const void *a, const void *b)
     return ret;
 }
 
-/* distancia euclídea entre 2 vectores */
+/* distancia euclídea entre los vectores a y b, ambos de n doubles */
 double distance(double *a, double *b, int n)
 {
     int i;
@@ -132,8 +135,6 @@ int define_matrix()
         if (test[i] == NULL)
             return 1;
     }
-
-/*ALLOCAR ESPACIO PARA LAS MATRICES DEL ALGORITMO*/
 
     return 0;
 }

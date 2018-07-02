@@ -419,7 +419,7 @@ int train(char *filename)
     int i, k;
     int start_k, end_k;
     int min_valid_k;
-    double min_valid_err, min_validtest_err;
+    double min_valid_err, min_valid_test_err, min_valid_train_err;
     double train_error, valid_error, test_error;
     FILE *fpredic;
 
@@ -453,11 +453,12 @@ int train(char *filename)
     }
 
     /* Table header */
-    fprintf(fpredic, "K,Train,Validation,Test\n");
+    // fprintf(fpredic, "K,Train,Validation,Test\n");
 
     min_valid_k = -1;
     min_valid_err = 1e10;
-    min_validtest_err = 1e10;
+    min_valid_test_err = 1e10;
+    min_valid_train_err = 1e10;
 
     for (K = start_k; K < end_k; K++) {
         printf("*** Entrenando con K = %d\n", K);
@@ -484,14 +485,16 @@ int train(char *filename)
 
         if (valid_error < min_valid_err) {
             min_valid_err = valid_error;
-            min_validtest_err = test_error;
+            min_valid_test_err = test_error;
             min_valid_k = K;
-        } else if (valid_error == min_valid_err && test_error < min_validtest_err) {
-            min_validtest_err = test_error;
+            min_valid_train_err = train_error;
+        } else if (valid_error == min_valid_err && test_error < min_valid_test_err) {
+            min_valid_test_err = test_error;
             min_valid_k = K;
+            min_valid_train_err = train_error;
         }
 
-        fprintf(fpredic, "%d,%f,%f,%f\n", K, train_error, valid_error, test_error);
+        fprintf(fpredic, "%d %f %f %f\n", K, train_error, valid_error, test_error);
         printf("*** Fin de entrenamiento con K = %d (min %d). Train = %f, Validation = %f, Test = %f\n", K, min_valid_k, train_error, valid_error, test_error);
         if (CONTROL)
             fflush(NULL);
@@ -500,7 +503,8 @@ int train(char *filename)
         // shuffle(PTOT);
     }
 
-    fprintf(fpredic, "Minimo error en validacion con K = %d, %f\n", min_valid_k, min_valid_err);
+    printf("Minimo error en validacion:\n");
+    printf(">>>%d %f %f %f\n", min_valid_k, min_valid_train_err, min_valid_err, min_valid_test_err);
 
     fclose(fpredic);
     

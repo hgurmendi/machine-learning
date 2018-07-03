@@ -31,7 +31,7 @@ do
             ln -s ${FILE_STEM}_${g}_${d}.test ${STEM_CURRENT}.test
 
             # Create knnfile
-            create_knnfile ${d} 2 ${TOTAL_SIZE} ${TRAIN_SIZE} ${TEST_SIZE} $(gen_rand) 0 1 ${STEM_CURRENT}.knn
+            create_knnfile ${d} 2 ${TOTAL_SIZE} ${TRAIN_SIZE} ${TEST_SIZE} $(gen_rand) 0 ${K} ${STEM_CURRENT}.knn
         done
     done
 done

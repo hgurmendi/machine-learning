@@ -11,14 +11,16 @@ from sklearn.utils import shuffle
 ##########################################################################
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-i", "--input", help="input file", default='test.data')
-parser.add_argument("-f", "--folds", help="number of folds", default=10)
-parser.add_argument("-v", "--verbosity", help="verbosity level, 0 for no messages, 1 for messages", default=0)
+parser.add_argument("-i", "--input", help="input file (default 'test.data')", default='test.data')
+parser.add_argument("-f", "--folds", help="number of folds (default 10)", default=10)
+parser.add_argument("-v", "--verbosity", help="verbosity level, 0 for no messages, 1 for messages (default 0)", default=0)
+parser.add_argument("-k", "--kernel", help="kernel type (default 'linear')", default='linear')
 args = parser.parse_args()
 
 INPUT = args.input
 FOLDS = int(args.folds)
 VERBOSITY = int(args.verbosity)
+KERNEL = args.kernel
 
 #quit()
 
@@ -36,9 +38,10 @@ with open(args.input, newline='') as f:
         classes.append(int(row[-1]))
 
 # Shuffle inputs:
-inputsShuf, classesShuf = shuffle(inputs, classes)
+inputsShuf, classesShuf = shuffle(inputs, classes, random_state=0)
 
 if VERBOSITY > 0:
+    print('Inputs:')
     for i in range(len(classesShuf)):
         print(inputsShuf[i], classesShuf[i])
 
@@ -80,11 +83,43 @@ if VERBOSITY > 0:
 
 
 ##########################################################################
-# SVM fitting
+# SVM fitting & error computation
 ##########################################################################
 
-#clf = svm.SVC(kernel='linear')
-#clf.fit(inputs, classes)
-#print(clf)
+eT, eV = 0.0, 0.0
+
+for i in range(FOLDS):
+    iV, cV, iT, cT = getSplits(i)
+    
+    clf = svm.SVC(kernel=KERNEL)
+
+    clf.fit(iT, cT)
+
+    pT = clf.predict(iT)
+    pV = clf.predict(iV)
+
+    mT, mV = 0, 0
+
+    for j in range(len(pT)):
+        if pT[j] == cT[j]:
+            mT = mT + 1
+
+    for j in range(len(pV)):
+        if pV[j] == cV[j]:
+            mV = mV + 1
+
+    eT = eT + (mT / len(pT))
+    eV = eV + (mV / len(pV))
+
+eT = eT / FOLDS
+eV = eV / FOLDS
+
+print('Error en train:', eT)
+print('Error en validacion:', eV)
+
+
+
+
+
 
 

@@ -15,14 +15,21 @@ parser.add_argument("-i", "--input", help="input file (default 'test.data')", de
 parser.add_argument("-f", "--folds", help="number of folds (default 10)", default=10)
 parser.add_argument("-v", "--verbosity", help="verbosity level, 0 for no messages, 1 for messages (default 0)", default=0)
 parser.add_argument("-k", "--kernel", help="kernel type (default 'linear')", default='linear')
+parser.add_argument("-C", help="Penalty parameter C of the error term (default 1.0)", default=1.0)
 args = parser.parse_args()
 
 INPUT = args.input
 FOLDS = int(args.folds)
 VERBOSITY = int(args.verbosity)
 KERNEL = args.kernel
+PARAM_C = float(args.C)
 
-#quit()
+print("Running Support Vector Machine with the following parameters:")
+print("Input data file: ", INPUT)
+print("Verbosity level: ", VERBOSITY)
+print("Kernel: ", KERNEL)
+print("C: ", PARAM_C)
+print("")
 
 ##########################################################################
 # Input parsing
@@ -91,7 +98,7 @@ eT, eV = 0.0, 0.0
 for i in range(FOLDS):
     iV, cV, iT, cT = getSplits(i)
     
-    clf = svm.SVC(kernel=KERNEL)
+    clf = svm.SVC(kernel=KERNEL, C=PARAM_C)
 
     clf.fit(iT, cT)
 
@@ -111,12 +118,12 @@ for i in range(FOLDS):
     eT = eT + (mT / len(pT))
     eV = eV + (mV / len(pV))
 
-eT = eT / FOLDS
-eV = eV / FOLDS
+eT = 1 - eT / FOLDS
+eV = 1 - eV / FOLDS
 
-print('Error en train:', eT)
-print('Error en validacion:', eV)
-
+print("Error en train:", eT)
+print("Error en validacion:", eV)
+print("")
 
 
 

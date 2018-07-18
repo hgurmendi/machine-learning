@@ -11,122 +11,85 @@ from sklearn.utils import shuffle
 ##########################################################################
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-i", "--input", help="input file (default 'test.data')", default='test.data')
-parser.add_argument("-f", "--folds", help="number of folds (default 10)", default=10)
-parser.add_argument("-v", "--verbosity", help="verbosity level, 0 for no messages, 1 for messages (default 0)", default=0)
-parser.add_argument("-k", "--kernel", help="kernel type (default 'linear')", default='linear')
-parser.add_argument("-C", help="Penalty parameter C of the error term (default 1.0)", default=1.0)
+parser.add_argument('-i', '--input', help='input files\' stem (without the .data or .test suffix)', required=True)
+parser.add_argument('-v', '--verbose', help='shows detailed output', default=False, action='store_true')
+parser.add_argument('-k', '--kernel', help='kernel type (default \'linear\')', default='linear')
+parser.add_argument('-C', help='penalty parameter C of the error term (default 1.0)', default=1.0)
 args = parser.parse_args()
 
 INPUT = args.input
-FOLDS = int(args.folds)
-VERBOSITY = int(args.verbosity)
+VERBOSE = args.verbose
 KERNEL = args.kernel
 PARAM_C = float(args.C)
 
-print("Running Support Vector Machine with the following parameters:")
-print("Input data file: ", INPUT)
-print("Verbosity level: ", VERBOSITY)
-print("Kernel: ", KERNEL)
-print("C: ", PARAM_C)
-print("")
+print('Running Support Vector Machine with the following parameters:')
+print('Input stem:', INPUT)
+print('Verbosity:', VERBOSE)
+print('Kernel:', KERNEL)
+print('C:', PARAM_C)
+print('')
 
 ##########################################################################
 # Input parsing
 ##########################################################################
 
-inputs = []
-classes = []
+def readFile(path):
+    """Reads the contents of the CSV file in path and returns two lists consisting of its inputs and classes, respectively."""
+    inputs = []
+    classes = []
 
-with open(args.input, newline='') as f:
-    reader = csv.reader(f)
-    for row in reader:
-        inputs.append(list(map(lambda x : float(x), row[:-1])))
-        classes.append(int(row[-1]))
+    with open(path, mode='r') as f:
+        reader = csv.reader(f)
+        for row in reader:
+            inputs.append(list(map(lambda x : float(x), row[:-1])))
+            classes.append(int(row[-1]))
 
-# Shuffle inputs:
-inputsShuf, classesShuf = shuffle(inputs, classes, random_state=0)
+        return inputs, classes
 
-if VERBOSITY > 0:
-    print('Inputs:')
-    for i in range(len(classesShuf)):
-        print(inputsShuf[i], classesShuf[i])
+trainFile = INPUT + '.data'
+testFile = INPUT + '.test'
 
-##########################################################################
-# K-Folds
-##########################################################################
-
-def getSplits(i):
-    foldLen = len(inputsShuf) // FOLDS
-
-    l, r = i * foldLen, (i + 1) * foldLen
-
-    inputsValid = inputsShuf[l:r]
-    classesValid = classesShuf[l:r]
+print('Reading train set from', trainFile)
+trainInputs, trainClasses = readFile(trainFile)
+if VERBOSE:
+    print('Train file contents:')
     
-    inputsTrain = inputsShuf[:]
-    del inputsTrain[l:r]
+    for i in range(len(trainInputs)):
+        print(trainInputs[i], trainClasses[i])
 
-    classesTrain = classesShuf[:]
-    del classesTrain[l:r]
-
-    return inputsValid, classesValid, inputsTrain, classesTrain
-
-if VERBOSITY > 0:
-    for i in range(FOLDS):
-        print('******************************')
-        print('Fold', i + 1)
-        print('******************************')
+print('Reading test set from', testFile)
+testInputs, testClasses = readFile(testFile)
+if VERBOSE:
+    print('Test file contents:')
     
-        a, b, c, d = getSplits(i)
-    
-        print('Validation:')
-        for j in range(len(a)):
-            print(a[j], b[j])
-    
-        print('Train:')
-        for j in range(len(c)):
-            print(c[j], d[j])
-
+    for i in range(len(testInputs)):
+        print(testInputs[i], testClasses[i])
 
 ##########################################################################
 # SVM fitting & error computation
 ##########################################################################
 
-eT, eV = 0.0, 0.0
+clf = svm.SVC(kernel=KERNEL, C=PARAM_C)
 
-for i in range(FOLDS):
-    iV, cV, iT, cT = getSplits(i)
-    
-    clf = svm.SVC(kernel=KERNEL, C=PARAM_C)
+clf.fit(trainInputs, trainClasses)
 
-    clf.fit(iT, cT)
+trainPredics = clf.predict(trainInputs)
+testPredics = clf.predict(testInputs)
 
-    pT = clf.predict(iT)
-    pV = clf.predict(iV)
+trainMisses, testMisses = 0, 0
 
-    mT, mV = 0, 0
+for i in range(len(trainPredics)):
+    if trainPredics[i] != trainClasses[i]:
+        trainMisses = trainMisses + 1
 
-    for j in range(len(pT)):
-        if pT[j] == cT[j]:
-            mT = mT + 1
+for i in range(len(testPredics)):
+    if testPredics[i] != testClasses[i]:
+        testMisses = testMisses + 1
 
-    for j in range(len(pV)):
-        if pV[j] == cV[j]:
-            mV = mV + 1
+trainError = trainMisses / len(trainClasses)
+testError = testMisses / len(testClasses)
 
-    eT = eT + (mT / len(pT))
-    eV = eV + (mV / len(pV))
-
-eT = 1 - eT / FOLDS
-eV = 1 - eV / FOLDS
-
-print("Error en train:", eT)
-print("Error en validacion:", eV)
-print("")
-
-
-
-
-
+print('TRAIN ERROR:', trainError)
+print('TEST ERROR:', testError)
+print('')
 

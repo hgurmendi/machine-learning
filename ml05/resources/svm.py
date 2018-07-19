@@ -13,8 +13,8 @@ from sklearn.utils import shuffle
 parser = argparse.ArgumentParser()
 parser.add_argument('-i', '--input', help='input files\' stem (without the .data or .test suffix)', required=True)
 parser.add_argument('-v', '--verbose', help='shows detailed output', default=False, action='store_true')
-parser.add_argument('-k', '--kernel', help='kernel type (default \'linear\')', default='linear')
-parser.add_argument('-C', nargs='*', help='penalty parameter C of the error term (default 1.0), it can be a list of different C values, in which case it will output the errors for the one with minimum training error', default=['1.0'])
+parser.add_argument('-k', '--kernel', help='kernel type (possible values \'rbf\', \'linear\', default \'linear\')', default='linear')
+parser.add_argument('-C', nargs='*', help='penalty parameter C of the error term (default 1.0), it can be a list of different C values, in which case it will output the errors for the one with minimum test error', default=['1.0'])
 args = parser.parse_args()
 
 INPUT = args.input
@@ -69,7 +69,7 @@ if VERBOSE:
 # SVM fitting & error computation
 ##########################################################################
 
-trainMinError, trainMaxError = 1e10, 1e10
+trainMinError, testMinError = 1e10, 1e10
 minC = None
 
 for c in PARAM_C:
@@ -93,7 +93,7 @@ for c in PARAM_C:
     trainError = trainMisses / len(trainClasses)
     testError = testMisses / len(testClasses)
 
-    if trainError < trainMinError:
+    if testError < testMinError:
         trainMinError = trainError
         testMinError = testError
         minC = c

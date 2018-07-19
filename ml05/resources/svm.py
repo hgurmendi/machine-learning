@@ -15,18 +15,24 @@ parser.add_argument('-i', '--input', help='input files\' stem (without the .data
 parser.add_argument('-v', '--verbose', help='shows detailed output', default=False, action='store_true')
 parser.add_argument('-k', '--kernel', help='kernel type (possible values \'rbf\', \'linear\', default \'linear\')', default='linear')
 parser.add_argument('-C', nargs='*', help='penalty parameter C of the error term (default 1.0), it can be a list of different C values, in which case it will output the errors for the one with minimum test error', default=['1.0'])
+parser.add_argument('-g', '--gamma', nargs='*', help='kernel coefficient for \'rbf\' kernel (default \'auto\')', default=['auto'])
 args = parser.parse_args()
 
 INPUT = args.input
 VERBOSE = args.verbose
 KERNEL = args.kernel
 PARAM_C = list(map(lambda x : float(x), args.C))
+if args.gamma[0] != 'auto':
+    PARAM_GAMMA = list(map(lambda x : float(x), args.gamma))
+else:
+    PARAM_GAMMA = ['auto']
 
 print('Running Support Vector Machine with the following parameters:')
 print('Input stem:', INPUT)
 print('Verbosity:', VERBOSE)
 print('Kernel:', KERNEL)
 print('C:', PARAM_C)
+print('Gamma:', PARAM_GAMMA)
 print('')
 
 ##########################################################################
@@ -65,40 +71,47 @@ if VERBOSE:
     for i in range(len(testInputs)):
         print(testInputs[i], testClasses[i])
 
+print('')
+
 ##########################################################################
 # SVM fitting & error computation
 ##########################################################################
 
 trainMinError, testMinError = 1e10, 1e10
 minC = None
+minGamma = None
 
 for c in PARAM_C:
-    clf = svm.SVC(kernel=KERNEL, C=c)
-    
-    clf.fit(trainInputs, trainClasses)
-    
-    trainPredics = clf.predict(trainInputs)
-    testPredics = clf.predict(testInputs)
-    
-    trainMisses, testMisses = 0, 0
-    
-    for i in range(len(trainPredics)):
-        if trainPredics[i] != trainClasses[i]:
-            trainMisses = trainMisses + 1
-    
-    for i in range(len(testPredics)):
-        if testPredics[i] != testClasses[i]:
-            testMisses = testMisses + 1
-    
-    trainError = trainMisses / len(trainClasses)
-    testError = testMisses / len(testClasses)
+    for g in PARAM_GAMMA:
+        clf = svm.SVC(kernel=KERNEL, C=c, gamma=g)
+        
+        clf.fit(trainInputs, trainClasses)
+        
+        trainPredics = clf.predict(trainInputs)
+        testPredics = clf.predict(testInputs)
+        
+        trainMisses, testMisses = 0, 0
+        
+        for i in range(len(trainPredics)):
+            if trainPredics[i] != trainClasses[i]:
+                trainMisses = trainMisses + 1
+        
+        for i in range(len(testPredics)):
+            if testPredics[i] != testClasses[i]:
+                testMisses = testMisses + 1
+        
+        trainError = trainMisses / len(trainClasses)
+        testError = testMisses / len(testClasses)
 
-    if testError < testMinError:
-        trainMinError = trainError
-        testMinError = testError
-        minC = c
+        if testError < testMinError:
+            trainMinError = trainError
+            testMinError = testError
+            minC = c
+            minGamma = g
 
+print('Minimum test error achieved with the following values:')
 print('C:', minC)
+print('Gamma:', minGamma)
 print('TRAIN ERROR:', trainMinError * 100)
 print('TEST ERROR:', testMinError * 100)
 print('')

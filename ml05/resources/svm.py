@@ -110,8 +110,8 @@ for c in PARAM_C:
             minGamma = g
 
 print('Minimum test error achieved with the following values:')
-print('C:', minC)
-print('Gamma:', minGamma)
+print('MIN C:', minC)
+print('MIN GAMMA:', minGamma)
 print('TRAIN ERROR:', trainMinError * 100)
 print('TEST ERROR:', testMinError * 100)
 print('')

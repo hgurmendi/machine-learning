@@ -2,6 +2,8 @@
 
 . ./ej_a_common.sh
 
+set -x
+
 # Clean previous work
 if [ ! -d "${TEMP_DIR}" ]; then
     mkdir ${TEMP_DIR}
@@ -9,16 +11,27 @@ fi
 
 rm -f ${TEMP_DIR}/*
 
-echo "C, Train, Validation" > ${TEMP_DIR}/${FILE_STEM}_svm.errors
+cp ${DATASET_PATH}.data ${TEMP_DIR}/${FILE_STEM}.data
+cp ${DATASET_PATH}.names ${TEMP_DIR}/${FILE_STEM}.names
 
-for c in ${PARAM_C}
+# Generate the folds
+${KFOLDS_PATH} -f ${FOLDS} -i ${TEMP_DIR}/${FILE_STEM} >/dev/null
+
+# Generate the .data and .test files for each method
+for i in $(seq 0 1 $(expr ${FOLDS} - 1))
 do
-    echo "Running SVM with C=${c}"
+    STEM=${TEMP_DIR}/${FILE_STEM}_${i}
 
-    ${SVM_PATH} -i ${DATASET} -f ${FOLDS} -C ${c} > ${TEMP_DIR}/${FILE_STEM}_svm_${c}.output
+    for method in svml svmr dt nbc
+    do
+        for suffix in data test
+        do
+            cp ${STEM}.${suffix} ${STEM}_${method}.${suffix}
+        done
+    done
 
-    ERR_VALID=$(grep "validacion" ${TEMP_DIR}/${FILE_STEM}_svm_${c}.output | awk -F ':' '{print $2}')
-    ERR_TRAIN=$(grep "train" ${TEMP_DIR}/${FILE_STEM}_svm_${c}.output | awk -F ':' '{print $2}')
-
-    echo "${c}, ${ERR_TRAIN}, ${ERR_VALID}" >> ${TEMP_DIR}/${FILE_STEM}_svm.errors
+    # And the .names file
+    cp ${DATASET_PATH}.names ${STEM}_dt.names
 done
+
+

@@ -2,8 +2,6 @@
 
 . ./ej_a_common.sh
 
-set -x
-
 # Clean previous work
 if [ ! -d "${TEMP_DIR}" ]; then
     mkdir ${TEMP_DIR}
@@ -22,7 +20,7 @@ for i in $(seq 0 1 $(expr ${FOLDS} - 1))
 do
     STEM=${TEMP_DIR}/${FILE_STEM}_${i}
 
-    for method in svml svmr dt nbc
+    for method in ${METHODS}
     do
         for suffix in data test
         do
@@ -32,6 +30,8 @@ do
 
     # And the .names file
     cp ${DATASET_PATH}.names ${STEM}_dt.names
+
+    create_nbfile 6 2 450 450 50 $(gen_rand) 0 ${STEM}_nbc.nb
 done
 
 

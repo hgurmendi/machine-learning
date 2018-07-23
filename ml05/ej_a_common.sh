@@ -6,9 +6,9 @@ SVM_PATH=./resources/svm.py
 KFOLDS_PATH=./resources/kfolds.py
 FILE_STEM=ej_a
 TEMP_DIR=temp_a
-# 10^i with i in [-5,5]
+# 1^i with i in [-5,5]
 PARAM_C="0.00001 0.0001 0.001 0.01 0.1 1.0 10.0 100.0 1000.0 10000.0"
-# 10^i with i in [-9,3]
+# 1^i with i in [-9,3]
 PARAM_GAMMA="0.000000001 0.00000001 0.0000001 0.000001 0.00001 0.0001 0.001 0.01 0.1 1.0 10.0 100.0 1000.0"
 DATASET_PATH=resources/heladas
 FOLDS=10

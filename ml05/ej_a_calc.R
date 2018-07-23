@@ -18,5 +18,5 @@ sds <- c("SD", sd(data$svml), sd(data$svmr), sd(data$dt), sd(data$nbc))
 data <- rbind(data, means)
 data <- rbind(data, sds)
 
-write.table(data, file=output)
+write.table(data, file=output, sep=",")
 
